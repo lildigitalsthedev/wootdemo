@@ -17,9 +17,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as CustomerIndexRouteImport } from './routes/customer.index'
 import { Route as DashboardStoriesRouteImport } from './routes/dashboard.stories'
+import { Route as DashboardShopRouteImport } from './routes/dashboard.shop'
 import { Route as DashboardChatsRouteImport } from './routes/dashboard.chats'
 import { Route as DashboardCallsRouteImport } from './routes/dashboard.calls'
 import { Route as CustomerStoriesRouteImport } from './routes/customer.stories'
+import { Route as CustomerShopRouteImport } from './routes/customer.shop'
+import { Route as CustomerConvertRouteImport } from './routes/customer.convert'
 import { Route as CustomerChatsRouteImport } from './routes/customer.chats'
 import { Route as CustomerCallsRouteImport } from './routes/customer.calls'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
@@ -66,6 +69,11 @@ const DashboardStoriesRoute = DashboardStoriesRouteImport.update({
   path: '/stories',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardShopRoute = DashboardShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardChatsRoute = DashboardChatsRouteImport.update({
   id: '/chats',
   path: '/chats',
@@ -79,6 +87,16 @@ const DashboardCallsRoute = DashboardCallsRouteImport.update({
 const CustomerStoriesRoute = CustomerStoriesRouteImport.update({
   id: '/stories',
   path: '/stories',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerShopRoute = CustomerShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerConvertRoute = CustomerConvertRouteImport.update({
+  id: '/convert',
+  path: '/convert',
   getParentRoute: () => CustomerRoute,
 } as any)
 const CustomerChatsRoute = CustomerChatsRouteImport.update({
@@ -118,9 +136,12 @@ export interface FileRoutesByFullPath {
   '/chat/$id': typeof ChatIdRoute
   '/customer/calls': typeof CustomerCallsRoute
   '/customer/chats': typeof CustomerChatsRoute
+  '/customer/convert': typeof CustomerConvertRoute
+  '/customer/shop': typeof CustomerShopRoute
   '/customer/stories': typeof CustomerStoriesRoute
   '/dashboard/calls': typeof DashboardCallsRoute
   '/dashboard/chats': typeof DashboardChatsRoute
+  '/dashboard/shop': typeof DashboardShopRoute
   '/dashboard/stories': typeof DashboardStoriesRoute
   '/customer/': typeof CustomerIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -134,9 +155,12 @@ export interface FileRoutesByTo {
   '/chat/$id': typeof ChatIdRoute
   '/customer/calls': typeof CustomerCallsRoute
   '/customer/chats': typeof CustomerChatsRoute
+  '/customer/convert': typeof CustomerConvertRoute
+  '/customer/shop': typeof CustomerShopRoute
   '/customer/stories': typeof CustomerStoriesRoute
   '/dashboard/calls': typeof DashboardCallsRoute
   '/dashboard/chats': typeof DashboardChatsRoute
+  '/dashboard/shop': typeof DashboardShopRoute
   '/dashboard/stories': typeof DashboardStoriesRoute
   '/customer': typeof CustomerIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -153,9 +177,12 @@ export interface FileRoutesById {
   '/chat/$id': typeof ChatIdRoute
   '/customer/calls': typeof CustomerCallsRoute
   '/customer/chats': typeof CustomerChatsRoute
+  '/customer/convert': typeof CustomerConvertRoute
+  '/customer/shop': typeof CustomerShopRoute
   '/customer/stories': typeof CustomerStoriesRoute
   '/dashboard/calls': typeof DashboardCallsRoute
   '/dashboard/chats': typeof DashboardChatsRoute
+  '/dashboard/shop': typeof DashboardShopRoute
   '/dashboard/stories': typeof DashboardStoriesRoute
   '/customer/': typeof CustomerIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -173,9 +200,12 @@ export interface FileRouteTypes {
     | '/chat/$id'
     | '/customer/calls'
     | '/customer/chats'
+    | '/customer/convert'
+    | '/customer/shop'
     | '/customer/stories'
     | '/dashboard/calls'
     | '/dashboard/chats'
+    | '/dashboard/shop'
     | '/dashboard/stories'
     | '/customer/'
     | '/dashboard/'
@@ -189,9 +219,12 @@ export interface FileRouteTypes {
     | '/chat/$id'
     | '/customer/calls'
     | '/customer/chats'
+    | '/customer/convert'
+    | '/customer/shop'
     | '/customer/stories'
     | '/dashboard/calls'
     | '/dashboard/chats'
+    | '/dashboard/shop'
     | '/dashboard/stories'
     | '/customer'
     | '/dashboard'
@@ -207,9 +240,12 @@ export interface FileRouteTypes {
     | '/chat/$id'
     | '/customer/calls'
     | '/customer/chats'
+    | '/customer/convert'
+    | '/customer/shop'
     | '/customer/stories'
     | '/dashboard/calls'
     | '/dashboard/chats'
+    | '/dashboard/shop'
     | '/dashboard/stories'
     | '/customer/'
     | '/dashboard/'
@@ -284,6 +320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardStoriesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/shop': {
+      id: '/dashboard/shop'
+      path: '/shop'
+      fullPath: '/dashboard/shop'
+      preLoaderRoute: typeof DashboardShopRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/chats': {
       id: '/dashboard/chats'
       path: '/chats'
@@ -303,6 +346,20 @@ declare module '@tanstack/react-router' {
       path: '/stories'
       fullPath: '/customer/stories'
       preLoaderRoute: typeof CustomerStoriesRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/shop': {
+      id: '/customer/shop'
+      path: '/shop'
+      fullPath: '/customer/shop'
+      preLoaderRoute: typeof CustomerShopRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/convert': {
+      id: '/customer/convert'
+      path: '/convert'
+      fullPath: '/customer/convert'
+      preLoaderRoute: typeof CustomerConvertRouteImport
       parentRoute: typeof CustomerRoute
     }
     '/customer/chats': {
@@ -346,6 +403,8 @@ declare module '@tanstack/react-router' {
 interface CustomerRouteChildren {
   CustomerCallsRoute: typeof CustomerCallsRoute
   CustomerChatsRoute: typeof CustomerChatsRoute
+  CustomerConvertRoute: typeof CustomerConvertRoute
+  CustomerShopRoute: typeof CustomerShopRoute
   CustomerStoriesRoute: typeof CustomerStoriesRoute
   CustomerIndexRoute: typeof CustomerIndexRoute
 }
@@ -353,6 +412,8 @@ interface CustomerRouteChildren {
 const CustomerRouteChildren: CustomerRouteChildren = {
   CustomerCallsRoute: CustomerCallsRoute,
   CustomerChatsRoute: CustomerChatsRoute,
+  CustomerConvertRoute: CustomerConvertRoute,
+  CustomerShopRoute: CustomerShopRoute,
   CustomerStoriesRoute: CustomerStoriesRoute,
   CustomerIndexRoute: CustomerIndexRoute,
 }
@@ -364,6 +425,7 @@ const CustomerRouteWithChildren = CustomerRoute._addFileChildren(
 interface DashboardRouteChildren {
   DashboardCallsRoute: typeof DashboardCallsRoute
   DashboardChatsRoute: typeof DashboardChatsRoute
+  DashboardShopRoute: typeof DashboardShopRoute
   DashboardStoriesRoute: typeof DashboardStoriesRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
@@ -371,6 +433,7 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardCallsRoute: DashboardCallsRoute,
   DashboardChatsRoute: DashboardChatsRoute,
+  DashboardShopRoute: DashboardShopRoute,
   DashboardStoriesRoute: DashboardStoriesRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
