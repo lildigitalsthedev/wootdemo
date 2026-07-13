@@ -9,38 +9,289 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CustomerRouteImport } from './routes/customer'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as CustomerIndexRouteImport } from './routes/customer.index'
+import { Route as DashboardStoriesRouteImport } from './routes/dashboard.stories'
+import { Route as DashboardShopRouteImport } from './routes/dashboard.shop'
+import { Route as DashboardChatsRouteImport } from './routes/dashboard.chats'
+import { Route as DashboardCallsRouteImport } from './routes/dashboard.calls'
+import { Route as CustomerStoriesRouteImport } from './routes/customer.stories'
+import { Route as CustomerShopRouteImport } from './routes/customer.shop'
+import { Route as CustomerConvertRouteImport } from './routes/customer.convert'
+import { Route as CustomerChatsRouteImport } from './routes/customer.chats'
+import { Route as CustomerCallsRouteImport } from './routes/customer.calls'
+import { Route as ChatIdRouteImport } from './routes/chat.$id'
+import { Route as CallIdRouteImport } from './routes/call.$id'
+import { Route as BusinessIdRouteImport } from './routes/business.$id'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomerRoute = CustomerRouteImport.update({
+  id: '/customer',
+  path: '/customer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const CustomerIndexRoute = CustomerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const DashboardStoriesRoute = DashboardStoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardShopRoute = DashboardShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardChatsRoute = DashboardChatsRouteImport.update({
+  id: '/chats',
+  path: '/chats',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardCallsRoute = DashboardCallsRouteImport.update({
+  id: '/calls',
+  path: '/calls',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const CustomerStoriesRoute = CustomerStoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerShopRoute = CustomerShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerConvertRoute = CustomerConvertRouteImport.update({
+  id: '/convert',
+  path: '/convert',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerChatsRoute = CustomerChatsRouteImport.update({
+  id: '/chats',
+  path: '/chats',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerCallsRoute = CustomerCallsRouteImport.update({
+  id: '/calls',
+  path: '/calls',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const ChatIdRoute = ChatIdRouteImport.update({
+  id: '/chat/$id',
+  path: '/chat/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CallIdRoute = CallIdRouteImport.update({
+  id: '/call/$id',
+  path: '/call/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessIdRoute = BusinessIdRouteImport.update({
+  id: '/business/$id',
+  path: '/business/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/customer': typeof CustomerRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/search': typeof SearchRoute
+  '/signup': typeof SignupRoute
+  '/business/$id': typeof BusinessIdRoute
+  '/call/$id': typeof CallIdRoute
+  '/chat/$id': typeof ChatIdRoute
+  '/customer/calls': typeof CustomerCallsRoute
+  '/customer/chats': typeof CustomerChatsRoute
+  '/customer/convert': typeof CustomerConvertRoute
+  '/customer/shop': typeof CustomerShopRoute
+  '/customer/stories': typeof CustomerStoriesRoute
+  '/dashboard/calls': typeof DashboardCallsRoute
+  '/dashboard/chats': typeof DashboardChatsRoute
+  '/dashboard/shop': typeof DashboardShopRoute
+  '/dashboard/stories': typeof DashboardStoriesRoute
+  '/customer/': typeof CustomerIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/search': typeof SearchRoute
+  '/signup': typeof SignupRoute
+  '/business/$id': typeof BusinessIdRoute
+  '/call/$id': typeof CallIdRoute
+  '/chat/$id': typeof ChatIdRoute
+  '/customer/calls': typeof CustomerCallsRoute
+  '/customer/chats': typeof CustomerChatsRoute
+  '/customer/convert': typeof CustomerConvertRoute
+  '/customer/shop': typeof CustomerShopRoute
+  '/customer/stories': typeof CustomerStoriesRoute
+  '/dashboard/calls': typeof DashboardCallsRoute
+  '/dashboard/chats': typeof DashboardChatsRoute
+  '/dashboard/shop': typeof DashboardShopRoute
+  '/dashboard/stories': typeof DashboardStoriesRoute
+  '/customer': typeof CustomerIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/customer': typeof CustomerRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/search': typeof SearchRoute
+  '/signup': typeof SignupRoute
+  '/business/$id': typeof BusinessIdRoute
+  '/call/$id': typeof CallIdRoute
+  '/chat/$id': typeof ChatIdRoute
+  '/customer/calls': typeof CustomerCallsRoute
+  '/customer/chats': typeof CustomerChatsRoute
+  '/customer/convert': typeof CustomerConvertRoute
+  '/customer/shop': typeof CustomerShopRoute
+  '/customer/stories': typeof CustomerStoriesRoute
+  '/dashboard/calls': typeof DashboardCallsRoute
+  '/dashboard/chats': typeof DashboardChatsRoute
+  '/dashboard/shop': typeof DashboardShopRoute
+  '/dashboard/stories': typeof DashboardStoriesRoute
+  '/customer/': typeof CustomerIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/customer'
+    | '/dashboard'
+    | '/search'
+    | '/signup'
+    | '/business/$id'
+    | '/call/$id'
+    | '/chat/$id'
+    | '/customer/calls'
+    | '/customer/chats'
+    | '/customer/convert'
+    | '/customer/shop'
+    | '/customer/stories'
+    | '/dashboard/calls'
+    | '/dashboard/chats'
+    | '/dashboard/shop'
+    | '/dashboard/stories'
+    | '/customer/'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/search'
+    | '/signup'
+    | '/business/$id'
+    | '/call/$id'
+    | '/chat/$id'
+    | '/customer/calls'
+    | '/customer/chats'
+    | '/customer/convert'
+    | '/customer/shop'
+    | '/customer/stories'
+    | '/dashboard/calls'
+    | '/dashboard/chats'
+    | '/dashboard/shop'
+    | '/dashboard/stories'
+    | '/customer'
+    | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/customer'
+    | '/dashboard'
+    | '/search'
+    | '/signup'
+    | '/business/$id'
+    | '/call/$id'
+    | '/chat/$id'
+    | '/customer/calls'
+    | '/customer/chats'
+    | '/customer/convert'
+    | '/customer/shop'
+    | '/customer/stories'
+    | '/dashboard/calls'
+    | '/dashboard/chats'
+    | '/dashboard/shop'
+    | '/dashboard/stories'
+    | '/customer/'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CustomerRoute: typeof CustomerRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
+  SearchRoute: typeof SearchRoute
+  SignupRoute: typeof SignupRoute
+  BusinessIdRoute: typeof BusinessIdRoute
+  CallIdRoute: typeof CallIdRoute
+  ChatIdRoute: typeof ChatIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customer': {
+      id: '/customer'
+      path: '/customer'
+      fullPath: '/customer'
+      preLoaderRoute: typeof CustomerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +299,159 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/customer/': {
+      id: '/customer/'
+      path: '/'
+      fullPath: '/customer/'
+      preLoaderRoute: typeof CustomerIndexRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/dashboard/stories': {
+      id: '/dashboard/stories'
+      path: '/stories'
+      fullPath: '/dashboard/stories'
+      preLoaderRoute: typeof DashboardStoriesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/shop': {
+      id: '/dashboard/shop'
+      path: '/shop'
+      fullPath: '/dashboard/shop'
+      preLoaderRoute: typeof DashboardShopRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/chats': {
+      id: '/dashboard/chats'
+      path: '/chats'
+      fullPath: '/dashboard/chats'
+      preLoaderRoute: typeof DashboardChatsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/calls': {
+      id: '/dashboard/calls'
+      path: '/calls'
+      fullPath: '/dashboard/calls'
+      preLoaderRoute: typeof DashboardCallsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/customer/stories': {
+      id: '/customer/stories'
+      path: '/stories'
+      fullPath: '/customer/stories'
+      preLoaderRoute: typeof CustomerStoriesRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/shop': {
+      id: '/customer/shop'
+      path: '/shop'
+      fullPath: '/customer/shop'
+      preLoaderRoute: typeof CustomerShopRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/convert': {
+      id: '/customer/convert'
+      path: '/convert'
+      fullPath: '/customer/convert'
+      preLoaderRoute: typeof CustomerConvertRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/chats': {
+      id: '/customer/chats'
+      path: '/chats'
+      fullPath: '/customer/chats'
+      preLoaderRoute: typeof CustomerChatsRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/calls': {
+      id: '/customer/calls'
+      path: '/calls'
+      fullPath: '/customer/calls'
+      preLoaderRoute: typeof CustomerCallsRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/chat/$id': {
+      id: '/chat/$id'
+      path: '/chat/$id'
+      fullPath: '/chat/$id'
+      preLoaderRoute: typeof ChatIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/call/$id': {
+      id: '/call/$id'
+      path: '/call/$id'
+      fullPath: '/call/$id'
+      preLoaderRoute: typeof CallIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business/$id': {
+      id: '/business/$id'
+      path: '/business/$id'
+      fullPath: '/business/$id'
+      preLoaderRoute: typeof BusinessIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface CustomerRouteChildren {
+  CustomerCallsRoute: typeof CustomerCallsRoute
+  CustomerChatsRoute: typeof CustomerChatsRoute
+  CustomerConvertRoute: typeof CustomerConvertRoute
+  CustomerShopRoute: typeof CustomerShopRoute
+  CustomerStoriesRoute: typeof CustomerStoriesRoute
+  CustomerIndexRoute: typeof CustomerIndexRoute
+}
+
+const CustomerRouteChildren: CustomerRouteChildren = {
+  CustomerCallsRoute: CustomerCallsRoute,
+  CustomerChatsRoute: CustomerChatsRoute,
+  CustomerConvertRoute: CustomerConvertRoute,
+  CustomerShopRoute: CustomerShopRoute,
+  CustomerStoriesRoute: CustomerStoriesRoute,
+  CustomerIndexRoute: CustomerIndexRoute,
+}
+
+const CustomerRouteWithChildren = CustomerRoute._addFileChildren(
+  CustomerRouteChildren,
+)
+
+interface DashboardRouteChildren {
+  DashboardCallsRoute: typeof DashboardCallsRoute
+  DashboardChatsRoute: typeof DashboardChatsRoute
+  DashboardShopRoute: typeof DashboardShopRoute
+  DashboardStoriesRoute: typeof DashboardStoriesRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardCallsRoute: DashboardCallsRoute,
+  DashboardChatsRoute: DashboardChatsRoute,
+  DashboardShopRoute: DashboardShopRoute,
+  DashboardStoriesRoute: DashboardStoriesRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CustomerRoute: CustomerRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
+  SearchRoute: SearchRoute,
+  SignupRoute: SignupRoute,
+  BusinessIdRoute: BusinessIdRoute,
+  CallIdRoute: CallIdRoute,
+  ChatIdRoute: ChatIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
