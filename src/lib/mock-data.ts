@@ -270,3 +270,49 @@ export const SEARCH_PLACEHOLDERS = [
   "Barber shops with no wait",
   "Describe what you're looking for",
 ];
+
+export type Contact = { id: string; name: string; handle: string; avatar: string; color: string; last?: string };
+
+const AVATAR_COLORS = ["#2F6BFF", "#7c3aed", "#f97316", "#0ea5e9", "#db2777", "#15803d", "#b91c1c", "#0e7490"];
+
+const CONTACT_NAMES = [
+  "Ava Chen", "Marcus Lee", "Priya Shah", "Diego Ruiz", "Nina Park", "Sam O'Neill",
+  "Kai Tanaka", "Zara Ahmed", "Leo Martin", "Iris Wong", "Noah Reed", "Maya Patel",
+  "Ethan Cole", "Sofia Rossi", "Jonah Kim", "Layla Hart", "Owen Blake", "Ruby Ford",
+  "Theo Sun", "Ella Vance", "Chidi Okafor", "Amara Bello", "Yuki Sato", "Femi Ade",
+];
+
+export const CONTACTS: Contact[] = CONTACT_NAMES.map((name, i) => ({
+  id: `u${i}`,
+  name,
+  handle: "@" + name.toLowerCase().replace(/[^a-z]/g, ""),
+  avatar: name.split(" ").map((n) => n[0]).join("").slice(0, 2),
+  color: AVATAR_COLORS[i % AVATAR_COLORS.length],
+  last: ["online", "last seen 2m ago", "last seen 1h ago", "last seen today", "active now"][i % 5],
+}));
+
+export type CustomList = { id: string; name: string; emoji: string; count: number; tint: string };
+
+export const LISTS: CustomList[] = [
+  { id: "l1", name: "VIP Customers", emoji: "⭐️", count: 24, tint: "#f59e0b" },
+  { id: "l2", name: "Suppliers", emoji: "📦", count: 12, tint: "#0ea5e9" },
+  { id: "l3", name: "Frequent Buyers", emoji: "🛍", count: 58, tint: "#2F6BFF" },
+  { id: "l4", name: "Wholesale", emoji: "🏷", count: 9, tint: "#7c3aed" },
+  { id: "l5", name: "Friends", emoji: "🫶", count: 34, tint: "#db2777" },
+  { id: "l6", name: "Family", emoji: "🏡", count: 8, tint: "#15803d" },
+  { id: "l7", name: "Recently Contacted", emoji: "🕒", count: 41, tint: "#64748b" },
+];
+
+export const ME = {
+  name: "Alex Morgan",
+  handle: "@alexmorgan",
+  dm: "woot.link/alexmorgan",
+  avatar: "AM",
+  color: "#2F6BFF",
+  role: "Business Owner",
+  verified: true,
+  business: "Sole Society",
+  followers: 12483,
+  reviews: 1284,
+  plan: "Medium Business",
+};
