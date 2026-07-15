@@ -30,13 +30,13 @@ export function AppShell({
             <Bell size={18} />
           </button>
           {!hideProfile && (
-            <Link
-              to={base === "customer" ? "/customer/convert" : "/dashboard/shop"}
-              className="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-soft"
-              aria-label="Profile"
-            >
-              <User size={18} />
-            </Link>
+          <Link
+            to="/profile"
+            className="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-soft"
+            aria-label="Profile"
+          >
+            <User size={18} />
+          </Link>
           )}
         </div>
       </header>

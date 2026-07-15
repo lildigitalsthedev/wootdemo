@@ -1,0 +1,191 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
+import { ArrowLeft, Check, ChevronDown, Crown } from "lucide-react";
+import { PageTransition } from "@/components/woot/PageTransition";
+
+export const Route = createFileRoute("/premium")({
+  head: () => ({ meta: [{ title: "Woot Premium" }, { name: "description", content: "Upgrade your business with Woot Premium." }] }),
+  component: PremiumPage,
+});
+
+type Plan = {
+  id: string; name: string; monthly: string; yearly: string; ngn?: string;
+  summary: string; highlight?: boolean; features: string[];
+};
+
+const PLANS: Plan[] = [
+  {
+    id: "free", name: "Free", monthly: "$0", yearly: "",
+    summary: "Everything you need to start selling on Woot.",
+    features: [
+      "Unlimited conversations",
+      "24-hour disappearing messages (cannot be disabled)",
+      "Business username",
+      "Basic business profile",
+      "Reviews & ratings",
+      "Stories",
+      "Voice & video calls",
+      "QR Code",
+      "Shareable business link",
+      "Basic analytics",
+      "Warning banner until business review",
+      "1 Admin",
+      "AI Support",
+    ],
+  },
+  {
+    id: "small", name: "Small Business", monthly: "$2.99", yearly: "$29.99", ngn: "₦2,999 / ₦29,999",
+    summary: "Grow with catalogue, hours, and referrals. Save ~17% yearly.",
+    features: [
+      "Everything in Free",
+      "Groups", "Catalogue", "Disable disappearing messages",
+      "Referral Program", "Small Search Boost", "Small Story Boost",
+      "Business Hours", "Location & Map", "Welcome Message",
+      "Customer Labels", "Up to 3 Admins / Linked Devices",
+      "Basic Business Insights", "Message Scheduling", "Advanced AI Support",
+    ],
+  },
+  {
+    id: "medium", name: "Medium Business", monthly: "$6.99", yearly: "$69.99", ngn: "₦6,999 / ₦69,999",
+    highlight: true,
+    summary: "For growing teams — boosts, verification, and team inbox.",
+    features: [
+      "Everything in Small",
+      "100 AI Credits (expandable)", "Medium Search Boost", "Medium Story Boost",
+      "Business Tags", "Auto Reply", "Advanced Business Profile",
+      "Broadcast Lists", "Verified Badge", "Saved Replies", "Quick Replies",
+      "Team Inbox", "Unified Inbox", "Customer Notes", "Story Scheduling",
+      "Multiple Catalogues", "Advanced Analytics", "AI Chat Assistant", "Priority Support",
+    ],
+  },
+  {
+    id: "large", name: "Large Business", monthly: "$14.99", yearly: "$149.99", ngn: "₦14,999 / ₦149,999",
+    summary: "Scale with AI automations, CRM, and custom domain.",
+    features: [
+      "Everything in Medium",
+      "Large Search Boost", "Large Story Boost", "Group Search Toggle",
+      "Trending Businesses", "Business Recommendations", "Website + Custom Domain",
+      "AI Auto Reply Bot", "AI Recommended Actions", "Communities",
+      "Supplier Search", "Competitor Search", "Affiliate Partnerships",
+      "AI Business Review", "AI-generated Stories", "AI-generated Posts",
+      "AI Product Descriptions", "CRM", "Customer Segmentation",
+      "Automation Workflows", "Appointment Booking", "Payment Integrations",
+      "Early Access Features", "Premium Support",
+    ],
+  },
+  {
+    id: "enterprise", name: "Enterprise", monthly: "$49.99", yearly: "$499.99", ngn: "₦49,999 / ₦499,999",
+    summary: "Custom AI, SSO, integrations, and a dedicated team.",
+    features: [
+      "Everything in Large",
+      "Unlimited Branches", "Unlimited Staff", "Department Management",
+      "SSO", "Advanced Permissions", "Audit Logs", "Compliance Tools",
+      "Custom AI trained on company documents", "AI Knowledge Base",
+      "Executive Analytics Dashboard", "Custom Reports", "API Access",
+      "ERP Integrations", "CRM Integrations", "Accounting Integrations", "HR Integrations",
+      "White Label Branding", "Dedicated Account Manager",
+      "Onboarding & Migration", "Staff Training", "SLA/Uptime Guarantee", "Phone Support",
+    ],
+  },
+];
+
+function PremiumPage() {
+  const nav = useNavigate();
+  const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
+  const [open, setOpen] = useState<string | null>("medium");
+
+  return (
+    <PageTransition>
+      <div className="mx-auto min-h-[100dvh] max-w-3xl bg-surface">
+        <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl">
+          <button onClick={() => nav({ to: "/profile" })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></button>
+          <h1 className="text-[17px] font-bold">Woot Premium</h1>
+          <div />
+        </header>
+
+        <div className="px-4 pb-16 pt-8">
+          <div className="text-center">
+            <motion.span initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+              className="inline-grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-primary to-purple-600 text-white shadow-card">
+              <Crown size={24} />
+            </motion.span>
+            <h2 className="mt-4 text-[28px] font-black tracking-tight">Do more with Premium</h2>
+            <p className="mx-auto mt-2 max-w-md text-[14px] text-muted-foreground">Boosts, AI tools, and analytics designed for businesses that ship.</p>
+
+            <div className="mx-auto mt-5 inline-flex rounded-full border bg-card p-1 shadow-soft">
+              {(["monthly", "yearly"] as const).map((c) => (
+                <button key={c} onClick={() => setCycle(c)}
+                  className="rounded-full px-4 py-1.5 text-[12px] font-semibold transition"
+                  style={{ background: cycle === c ? "var(--primary)" : "transparent", color: cycle === c ? "white" : "var(--foreground)" }}>
+                  {c === "monthly" ? "Monthly" : "Yearly · save 17%"}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-3">
+            {PLANS.map((p) => {
+              const isOpen = open === p.id;
+              const price = cycle === "monthly" ? p.monthly : p.yearly || p.monthly;
+              return (
+                <motion.div layout key={p.id}
+                  className={"overflow-hidden rounded-3xl border bg-card shadow-soft " + (p.highlight ? "ring-2 ring-primary" : "")}>
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-[17px] font-bold tracking-tight">{p.name}</h3>
+                          {p.highlight && <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground">Popular</span>}
+                        </div>
+                        <p className="mt-1 text-[13px] text-muted-foreground">{p.summary}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[22px] font-black tracking-tight">{price}</div>
+                        <div className="text-[11px] text-muted-foreground">{cycle === "monthly" ? "/ month" : p.yearly ? "/ year" : ""}</div>
+                        {p.ngn && <div className="mt-1 text-[10px] text-muted-foreground">{p.ngn}</div>}
+                      </div>
+                    </div>
+                    <div className="mt-4 flex items-center gap-2">
+                      <button className="flex-1 rounded-full px-4 py-2.5 text-[13px] font-semibold shadow-soft transition"
+                        style={{ background: p.highlight ? "var(--primary)" : "var(--background)", color: p.highlight ? "white" : "var(--foreground)", border: p.highlight ? "none" : "1px solid var(--border)" }}>
+                        {p.id === "free" ? "Current plan" : p.id === "enterprise" ? "Contact sales" : "Choose plan"}
+                      </button>
+                      <button onClick={() => setOpen(isOpen ? null : p.id)}
+                        className="grid h-10 w-10 place-items-center rounded-full border bg-background hover:bg-accent">
+                        <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                          <ChevronDown size={16} />
+                        </motion.span>
+                      </button>
+                    </div>
+                  </div>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div layout key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                        className="border-t bg-background/40">
+                        <ul className="grid gap-2 p-5">
+                          {p.features.map((f) => (
+                            <li key={f} className="flex items-start gap-2 text-[13px]">
+                              <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-primary/10 text-primary"><Check size={11} strokeWidth={3} /></span>
+                              <span>{f}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <p className="mt-8 text-center text-[11px] text-muted-foreground">Prices shown in USD and NGN. Taxes may apply. Cancel anytime.</p>
+        </div>
+      </div>
+    </PageTransition>
+  );
+}
