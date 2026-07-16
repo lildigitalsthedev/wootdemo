@@ -20,7 +20,7 @@ export function AppShell({
   void base;
   void hideProfile;
   return (
-    <div className="flex min-h-[100dvh] w-full flex-1 flex-col bg-background md:min-h-0">
+    <div className="flex min-h-[100dvh] w-full flex-1 flex-col bg-background lg:min-h-0">
       <header className="sticky top-0 z-20 grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl md:px-6">
         <div className="min-w-0">
           <h1 className="truncate text-[22px] font-black tracking-tight md:text-2xl">{title}</h1>
@@ -35,7 +35,7 @@ export function AppShell({
           </button>
         </div>
       </header>
-      <main className={`flex min-h-0 min-w-0 flex-1 flex-col ${noPadX ? "" : "md:overflow-y-auto md:px-4"}`}>{children}</main>
+      <main className={`flex min-h-0 min-w-0 flex-1 flex-col ${noPadX ? "" : "md:px-4 lg:overflow-y-auto"}`}>{children}</main>
     </div>
   );
 }
