@@ -7,10 +7,11 @@ import { BusinessAvatar } from "./BusinessAvatar";
 import { Fab } from "./Fab";
 import { Modal } from "./Modal";
 
-export function CallsView() {
+export function CallsView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
   const [modal, setModal] = useState<null | "voice" | "video" | "search" | "recent">(null);
   const [query, setQuery] = useState("");
   const results = BUSINESSES.filter((b) => b.name.toLowerCase().includes(query.toLowerCase())).slice(0, 10);
+  const callsPath: "/dashboard/calls" | "/customer/calls" = base === "dashboard" ? "/dashboard/calls" : "/customer/calls";
   return (
     <>
       <ul className="divide-y">
@@ -19,26 +20,42 @@ export function CallsView() {
         const Icon = c.missed ? PhoneMissed : c.type === "outgoing" ? PhoneOutgoing : PhoneIncoming;
         const color = c.missed ? "text-red-500" : "text-muted-foreground";
         const ActionIcon = c.mode === "video" ? Video : PhoneOutgoing;
+        const active = activeId === b.id;
+        const rowInner = (
+          <>
+            <span className="relative">
+              <BusinessAvatar b={b} rounded="rounded-full" size={48} />
+              {c.mode === "video" && (
+                <span className="absolute -bottom-0.5 -right-0.5 grid h-5 w-5 place-items-center rounded-full border-2 border-background bg-violet-600 text-white">
+                  <Video size={10} />
+                </span>
+              )}
+            </span>
+            <div className="min-w-0">
+              <div className="truncate text-[15px] font-semibold">{b.name}</div>
+              <div className={`inline-flex items-center gap-1 text-[12px] ${color}`}>
+                <Icon size={12} /> {c.missed ? "Missed" : c.type === "outgoing" ? "Outgoing" : "Incoming"} {c.mode === "video" ? "video" : ""} · {c.time}
+              </div>
+            </div>
+            <button className="grid h-9 w-9 place-items-center rounded-full border bg-background text-primary transition-transform hover:scale-105 hover:bg-accent active:scale-95">
+              <ActionIcon size={14} />
+            </button>
+          </>
+        );
         return (
           <motion.li key={c.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
-            <Link to="/call/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent">
-              <span className="relative">
-                <BusinessAvatar b={b} rounded="rounded-full" size={48} />
-                {c.mode === "video" && (
-                  <span className="absolute -bottom-0.5 -right-0.5 grid h-5 w-5 place-items-center rounded-full border-2 border-background bg-violet-600 text-white">
-                    <Video size={10} />
-                  </span>
-                )}
-              </span>
-              <div className="min-w-0">
-                <div className="truncate text-[15px] font-semibold">{b.name}</div>
-                <div className={`inline-flex items-center gap-1 text-[12px] ${color}`}>
-                  <Icon size={12} /> {c.missed ? "Missed" : c.type === "outgoing" ? "Outgoing" : "Incoming"} {c.mode === "video" ? "video" : ""} · {c.time}
-                </div>
-              </div>
-              <button className="grid h-9 w-9 place-items-center rounded-full border bg-background text-primary transition-transform hover:scale-105 hover:bg-accent active:scale-95">
-                <ActionIcon size={14} />
-              </button>
+            {/* Mobile/tablet: full-screen active-call route */}
+            <Link to="/call/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:hidden">
+              {rowInner}
+            </Link>
+            {/* Desktop: stays on the calls route, sets ?call= so the list never leaves the screen */}
+            <Link
+              to={callsPath}
+              search={{ call: b.id }}
+              className="hidden grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:grid"
+              style={active ? { background: "color-mix(in oklab, var(--primary) 10%, transparent)" } : undefined}
+            >
+              {rowInner}
             </Link>
           </motion.li>
         );
