@@ -11,8 +11,8 @@ type Composer = "text" | "voice" | "photo" | "video";
 
 export function StoriesView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
   const [commSearch, setCommSearch] = useState("");
-  const [createComm, setCreateComm] = useState(false);
   const [showCommSearch, setShowCommSearch] = useState(false);
+  const [createComm, setCreateComm] = useState(false);
   const [composer, setComposer] = useState<null | Composer>(null);
   const communities = COMMUNITIES.filter((c) => c.name.toLowerCase().includes(commSearch.toLowerCase()));
   const storiesPath: "/dashboard/stories" | "/customer/stories" = base === "dashboard" ? "/dashboard/stories" : "/customer/stories";
@@ -104,41 +104,29 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
 
       <div className="mt-8 flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Communities</h2>
-        <div className="flex items-center gap-1">
+        <div className="relative flex items-center gap-1">
           <button
             onClick={() => setShowCommSearch((v) => !v)}
-            className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent"
+            className="grid h-9 w-9 place-items-center rounded-full border bg-card hover:bg-muted"
           >
             <Search size={16} />
           </button>
-          <button onClick={() => setCreateComm(true)} className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground hover:opacity-90">
-            <Plus size={16} />
-          </button>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {showCommSearch && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="mt-2 overflow-hidden"
-          >
-            <div className="rounded-2xl border bg-card p-2 shadow-card">
+          {showCommSearch && (
+            <div className="absolute right-11 top-11 z-10 w-64 rounded-2xl border bg-background p-2 shadow-card">
               <input
                 autoFocus
                 value={commSearch}
                 onChange={(e) => setCommSearch(e.target.value)}
                 placeholder="Search communities"
-                className="h-10 w-full rounded-full border bg-background px-3 text-sm outline-none focus:border-primary"
+                className="h-10 w-full rounded-full border bg-card px-3 text-sm outline-none"
               />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+          )}
+          <button onClick={() => setCreateComm(true)} className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground hover:opacity-90">
+            <Plus size={16} />
+          </button>
+        </div>
+      </div>
       <div className="mt-3 grid gap-3">
         {communities.length === 0 && (
           <div className="rounded-3xl border bg-card p-6 text-center text-sm text-muted-foreground">No communities match "{commSearch}"</div>
