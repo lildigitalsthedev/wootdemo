@@ -68,45 +68,67 @@ function SettingsPage() {
               <div className="px-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{g.title}</div>
               <div className="mt-2 overflow-hidden rounded-3xl border bg-card shadow-soft">
                 {g.items.map((it, i) => (
-                  <button key={it.label} onClick={() => it.k && setOpen(open === it.k ? null : it.k)}
-                    className={"grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 text-left hover:bg-accent/60 " + (i > 0 ? "border-t" : "")}>
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-accent"><it.icon size={16} className="text-primary" /></span>
-                    <div className="min-w-0">
-                      <div className="text-[14px] font-semibold">{it.label}</div>
-                      {it.hint && <div className="truncate text-[12px] text-muted-foreground">{it.hint}</div>}
-                    </div>
-                    <ChevronRight size={16} className="text-muted-foreground" />
-                  </button>
+                  <div key={it.label} className={i > 0 ? "border-t" : ""}>
+                    <button
+                      onClick={() => it.k && setOpen(open === it.k ? null : it.k)}
+                      className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 text-left hover:bg-accent/60"
+                    >
+                      <span className="grid h-9 w-9 place-items-center rounded-full bg-accent"><it.icon size={16} className="text-primary" /></span>
+                      <div className="min-w-0">
+                        <div className="text-[14px] font-semibold">{it.label}</div>
+                        {it.hint && <div className="truncate text-[12px] text-muted-foreground">{it.hint}</div>}
+                      </div>
+                      <motion.span
+                        animate={{ rotate: it.k && open === it.k ? 90 : 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-muted-foreground"
+                      >
+                        <ChevronRight size={16} />
+                      </motion.span>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {it.k === "appearance" && open === "appearance" && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.22, ease: "easeOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="border-t bg-background/40 p-4">
+                            <div className="text-[12px] font-semibold text-muted-foreground">Theme</div>
+                            <div className="mt-3 grid grid-cols-3 gap-2">
+                              {[
+                                { k: "light" as const, icon: Sun, label: "Light" },
+                                { k: "dark" as const, icon: Moon, label: "Dark" },
+                                { k: "system" as const, icon: MonitorSmartphone, label: "System" },
+                              ].map((o) => {
+                                const on = theme === o.k;
+                                return (
+                                  <button
+                                    key={o.k}
+                                    onClick={() => changeTheme(o.k)}
+                                    className="flex flex-col items-center gap-1 rounded-2xl border p-3 transition"
+                                    style={{
+                                      background: on ? "color-mix(in oklab, var(--primary) 12%, transparent)" : "var(--background)",
+                                      borderColor: on ? "var(--primary)" : "var(--border)",
+                                    }}
+                                  >
+                                    <o.icon size={18} style={{ color: on ? "var(--primary)" : undefined }} />
+                                    <span className="text-[12px] font-semibold">{o.label}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 ))}
               </div>
             </div>
           ))}
-
-          <AnimatePresence>
-            {open === "appearance" && (
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
-                className="mt-4 rounded-3xl border bg-card p-4 shadow-soft">
-                <div className="text-[13px] font-semibold">Theme</div>
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {[
-                    { k: "light" as const, icon: Sun, label: "Light" },
-                    { k: "dark" as const, icon: Moon, label: "Dark" },
-                    { k: "system" as const, icon: MonitorSmartphone, label: "System" },
-                  ].map((o) => {
-                    const on = theme === o.k;
-                    return (
-                      <button key={o.k} onClick={() => changeTheme(o.k)}
-                        className="flex flex-col items-center gap-1 rounded-2xl border p-3 transition"
-                        style={{ background: on ? "color-mix(in oklab, var(--primary) 12%, transparent)" : "var(--background)", borderColor: on ? "var(--primary)" : "var(--border)" }}>
-                        <o.icon size={18} style={{ color: on ? "var(--primary)" : undefined }} />
-                        <span className="text-[12px] font-semibold">{o.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           <button className="mt-6 w-full rounded-full border border-destructive/40 bg-background py-3 text-sm font-semibold text-destructive hover:bg-destructive/5">Log out</button>
           <div className="mt-4 pb-10 text-center text-[11px] text-muted-foreground">Woot · v1.0.0</div>

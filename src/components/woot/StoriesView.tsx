@@ -27,7 +27,7 @@ export function StoriesView() {
               <Plus size={12} strokeWidth={3} />
             </span>
           </span>
-          <span className="w-full truncate text-center text-[11px] font-semibold">My Status</span>
+          <span className="w-full truncate text-center text-[11px] font-semibold">My Story</span>
         </button>
         {STORIES.map((s) => (
           <motion.button key={s.id} whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} className="flex w-20 shrink-0 flex-col items-center gap-1.5">

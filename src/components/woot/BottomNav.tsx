@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { MessageCircle, Sparkles, Phone, Store, User } from "lucide-react";
+import { motion } from "motion/react";
 
 export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -30,14 +31,31 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
             <Link
               key={it.to}
               to={it.to}
-              className="group flex min-w-[54px] flex-col items-center gap-0.5 rounded-full px-2 py-1.5 transition-all sm:min-w-[68px]"
-              style={{
-                background: active ? "color-mix(in oklab, var(--primary) 16%, transparent)" : "transparent",
-                color: active ? "var(--primary)" : "var(--muted-foreground)",
-              }}
+              className="group relative flex min-w-[54px] flex-col items-center gap-0.5 rounded-full px-2 py-1.5 sm:min-w-[68px]"
+              style={{ color: active ? "var(--primary)" : "var(--muted-foreground)" }}
             >
-              <Icon size={20} strokeWidth={active ? 2.4 : 2} />
-              <span className="text-[10.5px] font-semibold leading-tight">{it.label}</span>
+              {active && (
+                <motion.span
+                  layoutId="bottom-nav-pill"
+                  className="absolute inset-0 -z-0 rounded-full"
+                  style={{ background: "color-mix(in oklab, var(--primary) 16%, transparent)" }}
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                />
+              )}
+              <motion.span
+                className="relative z-10"
+                animate={{ scale: active ? 1.08 : 1, y: active ? -1 : 0 }}
+                transition={{ type: "spring", stiffness: 480, damping: 26 }}
+              >
+                <Icon size={20} strokeWidth={active ? 2.4 : 2} />
+              </motion.span>
+              <motion.span
+                className="relative z-10 text-[10.5px] font-semibold leading-tight"
+                animate={{ opacity: active ? 1 : 0.85 }}
+                transition={{ duration: 0.2 }}
+              >
+                {it.label}
+              </motion.span>
             </Link>
           );
         })}
