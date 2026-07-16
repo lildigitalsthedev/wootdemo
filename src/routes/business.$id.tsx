@@ -116,7 +116,7 @@ function BusinessStore() {
               <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="mt-3 border-t pt-3">
                 <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Photos</div>
                 <div className="mt-2 flex gap-2 overflow-x-auto">
-                  {b.images.map((src, i) => (
+                  {b.images.map((src: string, i: number) => (
                     <img key={i} src={src} alt="" className="h-16 w-16 shrink-0 rounded-xl object-cover" />
                   ))}
                 </div>
