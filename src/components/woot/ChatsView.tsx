@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, MessageCircle, Users, Megaphone, ListPlus, Check, Package, Receipt, MapPin, Mic, Archive } from "lucide-react";
 import { CHATS, CHAT_REQUESTS, GROUPS, findBusiness, CONTACTS, LISTS, type Chat } from "@/lib/mock-data";
 import { BusinessAvatar } from "./BusinessAvatar";
@@ -19,9 +19,11 @@ const ATTACHMENT_ICON: Record<NonNullable<Chat["attachment"]>, typeof Package> =
   product: Package,
 };
 
+type NewChatKind = "chat" | "group" | "broadcast" | "list";
+
 export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
   const [tab, setTab] = useState<Tab>("All");
-  const [modal, setModal] = useState<null | "chat" | "group" | "broadcast" | "list">(null);
+  const [modal, setModal] = useState<null | NewChatKind>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState("");
   const [chatSearch, setChatSearch] = useState("");
@@ -36,7 +38,7 @@ export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string;
     return b?.name.toLowerCase().includes(chatSearch.toLowerCase()) || c.last.toLowerCase().includes(chatSearch.toLowerCase());
   });
 
-  const openModal = (m: typeof modal) => {
+  const openModal = (m: NewChatKind | null) => {
     setSelected(new Set());
     setQuery("");
     setModal(m);
@@ -49,6 +51,16 @@ export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string;
     });
   };
   const filteredContacts = CONTACTS.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()));
+
+  // Sidebar dispatches this event when the desktop "+ New Chat" button is used.
+  useEffect(() => {
+    const onNewChat = (e: Event) => {
+      const kind = (e as CustomEvent<{ kind: NewChatKind }>).detail?.kind;
+      if (kind) openModal(kind);
+    };
+    window.addEventListener("woot:new-chat", onNewChat);
+    return () => window.removeEventListener("woot:new-chat", onNewChat);
+  }, []);
 
   return (
     <div>
@@ -127,7 +139,6 @@ export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string;
               const chatsPath: "/dashboard/chats" | "/customer/chats" = base === "dashboard" ? "/dashboard/chats" : "/customer/chats";
               return (
                 <motion.li key={c.id} layout initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.02, duration: 0.2 }}>
-                  {/* Mobile/tablet: full-screen navigation to the chat route */}
                   <Link to="/chat/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:hidden">
                     <BusinessAvatar b={b} rounded="rounded-full" size={48} />
                     <div className="min-w-0">
@@ -148,7 +159,6 @@ export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string;
                       )}
                     </div>
                   </Link>
-                  {/* Desktop only: stays on the current chats route, sets the ?chat= search param so the list never leaves the screen */}
                   <Link
                     to={chatsPath}
                     search={{ chat: b.id }}
@@ -186,20 +196,19 @@ export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string;
         </ul>
       )}
 
-      <Fab
-        actions={[
-          { label: "New Chat", icon: MessageCircle, onClick: () => openModal("chat") },
-          { label: "New Group", icon: Users, onClick: () => openModal("group"), tint: "#7c3aed" },
-          { label: "New Broadcast", icon: Megaphone, onClick: () => openModal("broadcast"), tint: "#f97316" },
-          { label: "New List", icon: ListPlus, onClick: () => openModal("list"), tint: "#15803d" },
-        ]}
-      />
+      {/* Mobile / tablet only — desktop uses the sidebar's + button */}
+      <div className="lg:hidden">
+        <Fab
+          actions={[
+            { label: "New Chat", icon: MessageCircle, onClick: () => openModal("chat") },
+            { label: "New Group", icon: Users, onClick: () => openModal("group"), tint: "#7c3aed" },
+            { label: "New Broadcast", icon: Megaphone, onClick: () => openModal("broadcast"), tint: "#f97316" },
+            { label: "New List", icon: ListPlus, onClick: () => openModal("list"), tint: "#15803d" },
+          ]}
+        />
+      </div>
 
-      <Modal
-        open={modal === "chat"}
-        onClose={() => setModal(null)}
-        title="New Chat"
-      >
+      <Modal open={modal === "chat"} onClose={() => setModal(null)} title="New Chat">
         <div className="p-4">
           <div className="flex items-center gap-2 rounded-full border bg-card px-3">
             <Search size={14} className="text-muted-foreground" />
