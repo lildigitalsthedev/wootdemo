@@ -17,8 +17,6 @@ export const Route = createFileRoute("/profile")({
 
 function ProfilePage() {
   const nav = useNavigate();
-  // Return to whichever side (business dashboard or customer) the person came from,
-  // instead of always assuming the dashboard — keeps desktop and mobile consistent.
   const { from } = Route.useSearch();
   const base: "dashboard" | "customer" = from === "customer" ? "customer" : "dashboard";
 
@@ -27,10 +25,10 @@ function ProfilePage() {
       <Sidebar base={base} />
       <PageTransition>
         <div className="mx-auto min-h-[100dvh] max-w-3xl bg-surface md:h-[100dvh] md:min-h-0 md:overflow-y-auto">
-          <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl md:px-6">
+          <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl md:px-6 lg:bg-background lg:backdrop-blur-none">
             <button onClick={() => nav({ to: `/${base}/chats` })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></button>
             <h1 className="truncate text-[17px] font-bold">Profile</h1>
-            <Link to="/settings" className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><SettingsIcon size={18} /></Link>
+            <Link to="/settings" search={{ from: base }} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><SettingsIcon size={18} /></Link>
           </header>
 
           <div className="px-4 pt-6 md:mx-auto md:max-w-xl">
