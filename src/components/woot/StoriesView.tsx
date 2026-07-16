@@ -1,16 +1,18 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Plus, Search, Type, Mic, Camera, Video, Users } from "lucide-react";
 import { STORIES, COMMUNITIES, ME } from "@/lib/mock-data";
 import { BusinessAvatar } from "./BusinessAvatar";
 import { Fab } from "./Fab";
 import { Modal } from "./Modal";
 
-export function StoriesView() {
+export function StoriesView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
   const [commSearch, setCommSearch] = useState("");
   const [createComm, setCreateComm] = useState(false);
   const [composer, setComposer] = useState<null | "text" | "voice" | "photo" | "video">(null);
   const communities = COMMUNITIES.filter((c) => c.name.toLowerCase().includes(commSearch.toLowerCase()));
+  const storiesPath: "/dashboard/stories" | "/customer/stories" = base === "dashboard" ? "/dashboard/stories" : "/customer/stories";
   return (
     <div className="px-4 py-2">
       <h2 className="mt-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Recent Updates</h2>
@@ -29,32 +31,61 @@ export function StoriesView() {
           </span>
           <span className="w-full truncate text-center text-[11px] font-semibold">My Story</span>
         </button>
-        {STORIES.map((s) => (
-          <motion.button key={s.id} whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} className="flex w-20 shrink-0 flex-col items-center gap-1.5">
-            <span className="rounded-full p-[2px]" style={{ background: s.seen ? "var(--border)" : "conic-gradient(from 180deg at 50% 50%, #2F6BFF, #7c3aed, #f97316, #2F6BFF)" }}>
-              <span className="block rounded-full bg-background p-[2px]">
-                <BusinessAvatar b={s.business} rounded="rounded-full" size={60} />
+        {STORIES.map((s) => {
+          const active = activeId === s.id;
+          const ring = { background: s.seen ? "var(--border)" : "conic-gradient(from 180deg at 50% 50%, #2F6BFF, #7c3aed, #f97316, #2F6BFF)" };
+          const inner = (
+            <>
+              <span className="rounded-full p-[2px]" style={ring}>
+                <span className="block rounded-full bg-background p-[2px]">
+                  <BusinessAvatar b={s.business} rounded="rounded-full" size={60} />
+                </span>
               </span>
-            </span>
-            <span className="w-full truncate text-center text-[11px] font-medium">{s.business.name}</span>
-          </motion.button>
-        ))}
+              <span className="w-full truncate text-center text-[11px] font-medium">{s.business.name}</span>
+            </>
+          );
+          return (
+            <div key={s.id}>
+              {/* Mobile/tablet: full-screen story overlay route */}
+              <Link to="/story/$id" params={{ id: s.id }} className="flex w-20 shrink-0 flex-col items-center gap-1.5 lg:hidden">
+                {inner}
+              </Link>
+              {/* Desktop: stays on the stories route, sets ?story= so the list never leaves the screen */}
+              <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} className="hidden lg:block">
+                <Link to={storiesPath} search={{ story: s.id }} className="flex w-20 shrink-0 flex-col items-center gap-1.5"
+                  style={active ? { filter: "drop-shadow(0 0 0 2px var(--primary))" } : undefined}>
+                  {inner}
+                </Link>
+              </motion.div>
+            </div>
+          );
+        })}
       </div>
 
       <h2 className="mt-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Featured</h2>
       <div className="mt-3 grid grid-cols-2 gap-3">
-        {STORIES.slice(0, 4).map((s) => (
-          <motion.div key={s.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -3 }}
-            className="relative overflow-hidden rounded-3xl shadow-soft transition-shadow hover:shadow-card" style={{ aspectRatio: "9 / 14" }}>
-            <img src={s.cover} alt="" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-3 text-white">
-              <div className="text-[13px] font-semibold">{s.business.name}</div>
-              <div className="truncate text-[11px] text-white/80">{s.caption}</div>
+        {STORIES.slice(0, 4).map((s) => {
+          const active = activeId === s.id;
+          const card = (
+            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -3 }}
+              className="relative overflow-hidden rounded-3xl shadow-soft transition-shadow hover:shadow-card"
+              style={{ aspectRatio: "9 / 14", outline: active ? "2px solid var(--primary)" : undefined, outlineOffset: active ? 2 : undefined }}>
+              <img src={s.cover} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-3 text-white">
+                <div className="text-[13px] font-semibold">{s.business.name}</div>
+                <div className="truncate text-[11px] text-white/80">{s.caption}</div>
+              </div>
+            </motion.div>
+          );
+          return (
+            <div key={s.id}>
+              <Link to="/story/$id" params={{ id: s.id }} className="lg:hidden">{card}</Link>
+              <Link to={storiesPath} search={{ story: s.id }} className="hidden lg:block">{card}</Link>
             </div>
-          </motion.div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="mt-8 flex items-center justify-between">
