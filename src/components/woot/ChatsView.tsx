@@ -19,7 +19,7 @@ const ATTACHMENT_ICON: Record<NonNullable<Chat["attachment"]>, typeof Package> =
   product: Package,
 };
 
-export function ChatsView() {
+export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
   const [tab, setTab] = useState<Tab>("All");
   const [modal, setModal] = useState<null | "chat" | "group" | "broadcast" | "list">(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -123,9 +123,38 @@ export function ChatsView() {
             {list.map((c, i) => {
               const b = findBusiness(c.businessId)!;
               const AttachIcon = c.attachment ? ATTACHMENT_ICON[c.attachment] : null;
+              const active = activeId === b.id;
+              const chatsPath: "/dashboard/chats" | "/customer/chats" = base === "dashboard" ? "/dashboard/chats" : "/customer/chats";
               return (
                 <motion.li key={c.id} layout initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.02, duration: 0.2 }}>
-                  <Link to="/chat/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent">
+                  {/* Mobile/tablet: full-screen navigation to the chat route */}
+                  <Link to="/chat/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:hidden">
+                    <BusinessAvatar b={b} rounded="rounded-full" size={48} />
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="truncate text-[15px] font-semibold">{b.name}</span>
+                        {b.verified && <VerifiedBadge />}
+                      </div>
+                      <div className="flex items-center gap-1 truncate text-[13px] text-muted-foreground">
+                        {AttachIcon && <AttachIcon size={12} className="shrink-0 text-primary" />}
+                        <span className="truncate">{c.last}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="text-[11px] text-muted-foreground">{c.time}</span>
+                      {c.unread > 0 && (
+                        <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                          className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">{c.unread}</motion.span>
+                      )}
+                    </div>
+                  </Link>
+                  {/* Desktop only: stays on the current chats route, sets the ?chat= search param so the list never leaves the screen */}
+                  <Link
+                    to={chatsPath}
+                    search={{ chat: b.id }}
+                    className="hidden grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:grid"
+                    style={active ? { background: "color-mix(in oklab, var(--primary) 10%, transparent)" } : undefined}
+                  >
                     <BusinessAvatar b={b} rounded="rounded-full" size={48} />
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
