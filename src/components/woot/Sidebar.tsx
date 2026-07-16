@@ -1,10 +1,11 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   MessageCircle, Sparkles, Phone, Store, User, Plus, Users, Megaphone, ListPlus,
+  Type, Mic, Camera, Video, PhoneCall, PhoneOutgoing, Users2, Package,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { WootLogo } from "./Logo";
 
 const NAV_ITEMS = (base: "dashboard" | "customer") => [
@@ -14,48 +15,93 @@ const NAV_ITEMS = (base: "dashboard" | "customer") => [
   { to: `/${base}/shop`, label: "Shop", icon: Store },
 ] as const;
 
-/** Width reserved in page layouts for the collapsed rail (icons-only). Kept in sync
- *  with the `w-20` class below — if that changes, update the `lg:pl-20` usages too. */
 export const SIDEBAR_COLLAPSED_WIDTH = 80;
 
-type NewChatKind = "chat" | "group" | "broadcast" | "list";
+type Section = "chats" | "stories" | "calls" | "shop";
 
-const NEW_CHAT_ACTIONS: {
-  kind: NewChatKind; label: string; icon: LucideIcon; tint?: string;
-}[] = [
-  { kind: "chat", label: "New Chat", icon: MessageCircle },
-  { kind: "group", label: "New Group", icon: Users, tint: "#7c3aed" },
-  { kind: "broadcast", label: "New Broadcast", icon: Megaphone, tint: "#f97316" },
-  { kind: "list", label: "New List", icon: ListPlus, tint: "#15803d" },
-];
+type ActionDef = {
+  kind: string;
+  label: string;
+  icon: LucideIcon;
+  tint?: string;
+};
+
+const SECTION_ACTIONS: Record<Section, { label: string; event: string; actions: ActionDef[] }> = {
+  chats: {
+    label: "New Chat",
+    event: "woot:new-chat",
+    actions: [
+      { kind: "chat", label: "New Chat", icon: MessageCircle },
+      { kind: "group", label: "New Group", icon: Users, tint: "#7c3aed" },
+      { kind: "broadcast", label: "New Broadcast", icon: Megaphone, tint: "#f97316" },
+      { kind: "list", label: "New List", icon: ListPlus, tint: "#15803d" },
+    ],
+  },
+  stories: {
+    label: "New Story",
+    event: "woot:new-story",
+    actions: [
+      { kind: "text", label: "Text", icon: Type },
+      { kind: "voice", label: "Voice", icon: Mic, tint: "#7c3aed" },
+      { kind: "photo", label: "Photo", icon: Camera, tint: "#f97316" },
+      { kind: "video", label: "Video", icon: Video, tint: "#db2777" },
+    ],
+  },
+  calls: {
+    label: "New Call",
+    event: "woot:new-call",
+    actions: [
+      { kind: "voice", label: "Voice Call", icon: PhoneCall },
+      { kind: "video", label: "Video Call", icon: Video, tint: "#7c3aed" },
+      { kind: "group", label: "Group Call", icon: Users2, tint: "#f97316" },
+    ],
+  },
+  shop: {
+    label: "New Product",
+    event: "woot:new-shop",
+    actions: [
+      { kind: "product", label: "New Product", icon: Package },
+      { kind: "order", label: "New Order", icon: PhoneOutgoing, tint: "#7c3aed" },
+    ],
+  },
+};
+
+function sectionFromPath(pathname: string, base: "dashboard" | "customer"): Section {
+  if (pathname.startsWith(`/${base}/stories`)) return "stories";
+  if (pathname.startsWith(`/${base}/calls`)) return "calls";
+  if (pathname.startsWith(`/${base}/shop`)) return "shop";
+  return "chats";
+}
 
 export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
-  const [newChatOpen, setNewChatOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const items = NAV_ITEMS(base);
+
+  const section = useMemo(() => sectionFromPath(pathname, base), [pathname, base]);
+  const cfg = SECTION_ACTIONS[section];
 
   const isActive = (to: string) => pathname === to || pathname.startsWith(to + "/");
 
   useEffect(() => {
-    if (!newChatOpen) return;
+    if (!addOpen) return;
     const onDoc = (e: MouseEvent) => {
-      if (!popoverRef.current?.contains(e.target as Node)) setNewChatOpen(false);
+      if (!popoverRef.current?.contains(e.target as Node)) setAddOpen(false);
     };
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
-  }, [newChatOpen]);
+  }, [addOpen]);
 
-  const triggerNewChat = (kind: NewChatKind) => {
+  const triggerAction = (kind: string) => {
     const dispatch = () =>
-      window.dispatchEvent(new CustomEvent("woot:new-chat", { detail: { kind } }));
-    const chatsPath = `/${base}/chats` as const;
-    setNewChatOpen(false);
-    if (!pathname.startsWith(chatsPath)) {
-      // Navigate to the Chats screen first, then open the modal once mounted.
-      void navigate({ to: chatsPath }).then(() => setTimeout(dispatch, 30));
+      window.dispatchEvent(new CustomEvent(cfg.event, { detail: { kind } }));
+    const sectionPath = `/\( {base}/ \){section}` as const;
+    setAddOpen(false);
+    if (!pathname.startsWith(sectionPath)) {
+      void navigate({ to: sectionPath }).then(() => setTimeout(dispatch, 30));
     } else {
       setTimeout(dispatch, 0);
     }
@@ -65,7 +111,7 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
     <motion.nav
       aria-label="Primary"
       onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => { setExpanded(false); setNewChatOpen(false); }}
+      onMouseLeave={() => { setExpanded(false); setAddOpen(false); }}
       initial={false}
       animate={{ width: expanded ? 232 : SIDEBAR_COLLAPSED_WIDTH }}
       transition={{ type: "spring", stiffness: 420, damping: 38 }}
@@ -106,9 +152,9 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
       >
         <button
           type="button"
-          onClick={() => setNewChatOpen((v) => !v)}
-          aria-label="New chat"
-          aria-expanded={newChatOpen}
+          onClick={() => setAddOpen((v) => !v)}
+          aria-label={cfg.label}
+          aria-expanded={addOpen}
           className="relative mb-1 flex h-12 w-full items-center gap-3 overflow-hidden rounded-2xl px-[15px] text-[14px] font-semibold shadow-sm transition-transform active:scale-[0.98]"
           style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
@@ -124,7 +170,7 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
                 transition={{ duration: 0.15 }}
                 className="whitespace-nowrap"
               >
-                New Chat
+                {cfg.label}
               </motion.span>
             )}
           </AnimatePresence>
@@ -140,8 +186,9 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
         />
 
         <AnimatePresence>
-          {newChatOpen && (
+          {addOpen && (
             <motion.div
+              key={section}
               initial={{ opacity: 0, x: -8, scale: 0.96 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -8, scale: 0.96 }}
@@ -149,12 +196,12 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
               className="absolute bottom-16 left-full z-50 ml-3 w-56 overflow-hidden rounded-2xl border bg-background p-1.5 shadow-card"
               style={{ borderColor: "color-mix(in oklab, var(--foreground) 8%, transparent)" }}
             >
-              {NEW_CHAT_ACTIONS.map((a) => {
+              {cfg.actions.map((a) => {
                 const Icon = a.icon;
                 return (
                   <button
                     key={a.kind}
-                    onClick={() => triggerNewChat(a.kind)}
+                    onClick={() => triggerAction(a.kind)}
                     className="flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left text-[13px] font-semibold hover:bg-accent"
                   >
                     <span
