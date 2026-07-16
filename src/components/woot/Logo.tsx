@@ -27,12 +27,24 @@ export function WootLogo({ size = 28, mono = false }: { size?: number; mono?: bo
 
 export function VerifiedBadge({ className = "" }: { className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${className}`}
-      style={{ background: "color-mix(in oklab, var(--primary) 12%, transparent)", color: "var(--primary)" }}>
-      <svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-        <path d="M10 1l2.39 2.05 3.11-.32 1.05 2.96 2.72 1.55-.75 3.03L20 12.5l-2.48 1.83.75 3.03-2.72 1.55-1.05 2.96-3.11-.32L10 19l-2.39 2.05-3.11-.32-1.05-2.96L.73 16.22l.75-3.03L-1 12.5l2.48-1.73-.75-3.03 2.72-1.55L4.5.73l3.11.32L10 1z"/>
+    <span
+      className={`inline-flex shrink-0 items-center justify-center ${className}`}
+      aria-label="Verified"
+      title="Verified"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path
+          d="M12 1.5l2.09 1.79 2.74-.32 1.13 2.51 2.51 1.13-.32 2.74L22 12l-1.85 2.09.32 2.74-2.51 1.13-1.13 2.51-2.74-.32L12 22.5l-2.09-1.79-2.74.32-1.13-2.51L3.53 17.4l.32-2.74L2 12l1.85-2.09-.32-2.74L6.04 6.04l1.13-2.51 2.74.32L12 1.5z"
+          fill="#2F6BFF"
+        />
+        <path
+          d="M8 12.2l2.6 2.6L16 9.4"
+          stroke="#fff"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
-      Verified
     </span>
   );
 }
