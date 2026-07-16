@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
-import { ArrowLeft, Check, ChevronDown, Crown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Check, ChevronDown, Crown, Globe } from "lucide-react";
 import { PageTransition } from "@/components/woot/PageTransition";
 
 export const Route = createFileRoute("/premium")({
@@ -10,13 +10,15 @@ export const Route = createFileRoute("/premium")({
 });
 
 type Plan = {
-  id: string; name: string; monthly: string; yearly: string; ngn?: string;
+  id: string; name: string;
+  monthlyUsd: number; yearlyUsd: number | null;
+  monthlyNgn: number; yearlyNgn: number | null;
   summary: string; highlight?: boolean; features: string[];
 };
 
 const PLANS: Plan[] = [
   {
-    id: "free", name: "Free", monthly: "$0", yearly: "",
+    id: "free", name: "Free", monthlyUsd: 0, yearlyUsd: null, monthlyNgn: 0, yearlyNgn: null,
     summary: "Everything you need to start selling on Woot.",
     features: [
       "Unlimited conversations",
@@ -35,7 +37,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "small", name: "Small Business", monthly: "$2.99", yearly: "$29.99", ngn: "₦2,999 / ₦29,999",
+    id: "small", name: "Small Business", monthlyUsd: 2.99, yearlyUsd: 29.99, monthlyNgn: 2999, yearlyNgn: 29999,
     summary: "Grow with catalogue, hours, and referrals. Save ~17% yearly.",
     features: [
       "Everything in Free",
@@ -47,7 +49,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "medium", name: "Medium Business", monthly: "$6.99", yearly: "$69.99", ngn: "₦6,999 / ₦69,999",
+    id: "medium", name: "Medium Business", monthlyUsd: 6.99, yearlyUsd: 69.99, monthlyNgn: 6999, yearlyNgn: 69999,
     highlight: true,
     summary: "For growing teams — boosts, verification, and team inbox.",
     features: [
@@ -60,7 +62,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "large", name: "Large Business", monthly: "$14.99", yearly: "$149.99", ngn: "₦14,999 / ₦149,999",
+    id: "large", name: "Large Business", monthlyUsd: 14.99, yearlyUsd: 149.99, monthlyNgn: 14999, yearlyNgn: 149999,
     summary: "Scale with AI automations, CRM, and custom domain.",
     features: [
       "Everything in Medium",
@@ -75,7 +77,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "enterprise", name: "Enterprise", monthly: "$49.99", yearly: "$499.99", ngn: "₦49,999 / ₦499,999",
+    id: "enterprise", name: "Enterprise", monthlyUsd: 49.99, yearlyUsd: 499.99, monthlyNgn: 49999, yearlyNgn: 499999,
     summary: "Custom AI, SSO, integrations, and a dedicated team.",
     features: [
       "Everything in Large",
@@ -90,10 +92,55 @@ const PLANS: Plan[] = [
   },
 ];
 
+type Currency = "USD" | "NGN";
+
+/** Detects whether the viewer is likely in Nigeria, without requiring a permission prompt. */
+function useRegionCurrency(): { currency: Currency; auto: Currency; source: "timezone" | "locale" | "geo"; override: Currency | null; setOverride: (c: Currency | null) => void } {
+  const [auto, setAuto] = useState<Currency>("USD");
+  const [source, setSource] = useState<"timezone" | "locale" | "geo">("timezone");
+  const [override, setOverride] = useState<Currency | null>(null);
+
+  useEffect(() => {
+    // 1. Fast, no-permission signal: browser timezone.
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (tz === "Africa/Lagos") {
+        setAuto("NGN");
+        setSource("timezone");
+      }
+    } catch {
+      /* Intl unsupported — fall through to default USD */
+    }
+
+    // 2. Secondary signal: browser locale region (e.g. "en-NG").
+    try {
+      const locales = navigator.languages?.length ? navigator.languages : [navigator.language];
+      if (locales.some((l) => l?.toUpperCase().endsWith("-NG"))) {
+        setAuto("NGN");
+        setSource("locale");
+      }
+    } catch {
+      /* navigator unsupported — ignore */
+    }
+  }, []);
+
+  return { currency: override ?? auto, auto, source, override, setOverride };
+}
+
+function formatPrice(plan: Plan, cycle: "monthly" | "yearly", currency: Currency) {
+  if (currency === "NGN") {
+    const ngn = cycle === "monthly" ? plan.monthlyNgn : (plan.yearlyNgn ?? plan.monthlyNgn);
+    return ngn === 0 ? "₦0" : `₦${ngn.toLocaleString("en-NG")}`;
+  }
+  const usd = cycle === "monthly" ? plan.monthlyUsd : (plan.yearlyUsd ?? plan.monthlyUsd);
+  return usd === 0 ? "$0" : `$${usd.toFixed(2)}`;
+}
+
 function PremiumPage() {
   const nav = useNavigate();
   const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
   const [open, setOpen] = useState<string | null>("medium");
+  const { currency, setOverride } = useRegionCurrency();
 
   return (
     <PageTransition>
@@ -122,12 +169,22 @@ function PremiumPage() {
                 </button>
               ))}
             </div>
+
+            <button
+              onClick={() => setOverride(currency === "NGN" ? "USD" : "NGN")}
+              className="mx-auto mt-3 flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground shadow-soft transition-transform hover:scale-105 active:scale-95"
+            >
+              <Globe size={12} />
+              Showing prices in {currency === "NGN" ? "Nigerian Naira (₦)" : "US Dollars ($)"}
+              <span className="text-primary">· Switch to {currency === "NGN" ? "USD" : "NGN"}</span>
+            </button>
           </div>
 
           <div className="mt-8 grid gap-3">
             {PLANS.map((p) => {
               const isOpen = open === p.id;
-              const price = cycle === "monthly" ? p.monthly : p.yearly || p.monthly;
+              const price = formatPrice(p, cycle, currency);
+              const hasYearly = currency === "NGN" ? p.yearlyNgn !== null : p.yearlyUsd !== null;
               return (
                 <motion.div layout key={p.id}
                   className={"overflow-hidden rounded-3xl border bg-card shadow-soft " + (p.highlight ? "ring-2 ring-primary" : "")}>
@@ -142,8 +199,7 @@ function PremiumPage() {
                       </div>
                       <div className="text-right">
                         <div className="text-[22px] font-black tracking-tight">{price}</div>
-                        <div className="text-[11px] text-muted-foreground">{cycle === "monthly" ? "/ month" : p.yearly ? "/ year" : ""}</div>
-                        {p.ngn && <div className="mt-1 text-[10px] text-muted-foreground">{p.ngn}</div>}
+                        <div className="text-[11px] text-muted-foreground">{cycle === "monthly" ? "/ month" : hasYearly ? "/ year" : ""}</div>
                       </div>
                     </div>
                     <div className="mt-4 flex items-center gap-2">
@@ -183,7 +239,9 @@ function PremiumPage() {
             })}
           </div>
 
-          <p className="mt-8 text-center text-[11px] text-muted-foreground">Prices shown in USD and NGN. Taxes may apply. Cancel anytime.</p>
+          <p className="mt-8 text-center text-[11px] text-muted-foreground">
+            {currency === "NGN" ? "Local pricing for Nigeria." : "Prices shown in USD."} Taxes may apply. Cancel anytime.
+          </p>
         </div>
       </div>
     </PageTransition>
