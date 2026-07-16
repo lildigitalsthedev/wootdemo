@@ -170,3 +170,18 @@
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }
+@utility animate-shimmer {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--foreground) 6%, transparent), transparent);
+    animation: shimmer-sweep 1.6s ease-in-out infinite;
+  }
+}
+@keyframes shimmer-sweep {
+  100% { transform: translateX(100%); }
+}
