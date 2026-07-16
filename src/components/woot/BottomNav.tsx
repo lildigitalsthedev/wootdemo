@@ -9,7 +9,7 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
     { to: `/${base}/stories`, label: "Stories", icon: Sparkles },
     { to: `/${base}/calls`, label: "Calls", icon: Phone },
     { to: `/${base}/shop`, label: "Shop", icon: Store },
-    { to: `/profile`, label: "Profile", icon: User },
+    { to: `/profile`, label: "Profile", icon: User, search: { from: base } },
   ] as const;
   return (
     <nav
@@ -31,6 +31,7 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
             <Link
               key={it.to}
               to={it.to}
+              search={"search" in it ? it.search : undefined}
               className="group relative flex min-w-[54px] flex-col items-center gap-0.5 rounded-full px-2 py-1.5 sm:min-w-[68px]"
               style={{ color: active ? "var(--primary)" : "var(--muted-foreground)" }}
             >
