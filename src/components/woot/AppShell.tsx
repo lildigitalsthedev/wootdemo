@@ -21,7 +21,7 @@ export function AppShell({
   void hideProfile;
   return (
     <div className="flex min-h-[100dvh] w-full flex-1 flex-col bg-background lg:min-h-0">
-      <header className="sticky top-0 z-20 grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl md:px-6">
+      <header className="sticky top-0 z-20 grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl md:px-6 lg:bg-background lg:backdrop-blur-none">
         <div className="min-w-0">
           <h1 className="truncate text-[22px] font-black tracking-tight md:text-2xl">{title}</h1>
         </div>
