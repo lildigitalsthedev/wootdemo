@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Plus, Search, Type, Mic, Camera, Video, Users } from "lucide-react";
 import { STORIES, COMMUNITIES, ME } from "@/lib/mock-data";
@@ -7,12 +7,27 @@ import { BusinessAvatar } from "./BusinessAvatar";
 import { Fab } from "./Fab";
 import { Modal } from "./Modal";
 
+type Composer = "text" | "voice" | "photo" | "video";
+
 export function StoriesView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
   const [commSearch, setCommSearch] = useState("");
   const [createComm, setCreateComm] = useState(false);
-  const [composer, setComposer] = useState<null | "text" | "voice" | "photo" | "video">(null);
+  const [composer, setComposer] = useState<null | Composer>(null);
   const communities = COMMUNITIES.filter((c) => c.name.toLowerCase().includes(commSearch.toLowerCase()));
   const storiesPath: "/dashboard/stories" | "/customer/stories" = base === "dashboard" ? "/dashboard/stories" : "/customer/stories";
+
+  // Desktop sidebar "+" dispatches this when Stories section is active.
+  useEffect(() => {
+    const onNewStory = (e: Event) => {
+      const kind = (e as CustomEvent<{ kind: Composer }>).detail?.kind;
+      if (kind === "text" || kind === "voice" || kind === "photo" || kind === "video") {
+        setComposer(kind);
+      }
+    };
+    window.addEventListener("woot:new-story", onNewStory);
+    return () => window.removeEventListener("woot:new-story", onNewStory);
+  }, []);
+
   return (
     <div className="px-4 py-2">
       <h2 className="mt-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Recent Updates</h2>
@@ -46,11 +61,9 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
           );
           return (
             <div key={s.id}>
-              {/* Mobile/tablet: full-screen story overlay route */}
               <Link to="/story/$id" params={{ id: s.id }} className="flex w-20 shrink-0 flex-col items-center gap-1.5 lg:hidden">
                 {inner}
               </Link>
-              {/* Desktop: stays on the stories route, sets ?story= so the list never leaves the screen */}
               <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} className="hidden lg:block">
                 <Link to={storiesPath} search={{ story: s.id }} className="flex w-20 shrink-0 flex-col items-center gap-1.5"
                   style={active ? { filter: "drop-shadow(0 0 0 2px var(--primary))" } : undefined}>
@@ -91,12 +104,11 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
       <div className="mt-8 flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Communities</h2>
         <div className="flex items-center gap-1">
-          <details className="relative">
-            <summary className="grid h-9 w-9 cursor-pointer list-none place-items-center rounded-full hover:bg-accent"><Search size={16} /></summary>
+          **Summary:**
+<Search size={16} />
             <div className="absolute right-0 top-11 z-10 w-64 rounded-2xl border bg-background p-2 shadow-card">
               <input autoFocus value={commSearch} onChange={(e) => setCommSearch(e.target.value)} placeholder="Search communities" className="h-10 w-full rounded-full border bg-card px-3 text-sm outline-none" />
             </div>
-          </details>
           <button onClick={() => setCreateComm(true)} className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground hover:opacity-90">
             <Plus size={16} />
           </button>
@@ -119,14 +131,17 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
       </div>
       <div className="h-28" />
 
-      <Fab
-        actions={[
-          { label: "Text", icon: Type, onClick: () => setComposer("text") },
-          { label: "Voice", icon: Mic, onClick: () => setComposer("voice"), tint: "#7c3aed" },
-          { label: "Photo", icon: Camera, onClick: () => setComposer("photo"), tint: "#f97316" },
-          { label: "Video", icon: Video, onClick: () => setComposer("video"), tint: "#db2777" },
-        ]}
-      />
+      {/* Mobile / tablet only — desktop uses the sidebar's contextual + button */}
+      <div className="lg:hidden">
+        <Fab
+          actions={[
+            { label: "Text", icon: Type, onClick: () => setComposer("text") },
+            { label: "Voice", icon: Mic, onClick: () => setComposer("voice"), tint: "#7c3aed" },
+            { label: "Photo", icon: Camera, onClick: () => setComposer("photo"), tint: "#f97316" },
+            { label: "Video", icon: Video, onClick: () => setComposer("video"), tint: "#db2777" },
+          ]}
+        />
+      </div>
 
       <Modal open={composer !== null} onClose={() => setComposer(null)} title={`New ${composer ?? ""} Story`}>
         <div className="p-6">
