@@ -11,7 +11,7 @@ const NAV_ITEMS = (base: "dashboard" | "customer") => [
   { to: `/${base}/shop`, label: "Shop", icon: Store },
 ] as const;
 
-const PROFILE_ITEM = { to: "/profile", label: "Profile", icon: User } as const;
+const PROFILE_ITEM = { label: "Profile", icon: User } as const;
 
 /** Width reserved in page layouts for the collapsed rail (icons-only). Kept in sync
  * with the `w-20` class below — if that changes, update the `md:pl-20` usages too. */
@@ -63,20 +63,21 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
       </div>
 
       <div className="mt-auto border-t px-3 pt-3" style={{ borderColor: "color-mix(in oklab, var(--foreground) 8%, transparent)" }}>
-        <NavRow to={PROFILE_ITEM.to} label={PROFILE_ITEM.label} Icon={PROFILE_ITEM.icon} active={isActive(PROFILE_ITEM.to)} expanded={expanded} />
+        <NavRow to="/profile" search={{ from: base }} label={PROFILE_ITEM.label} Icon={PROFILE_ITEM.icon} active={isActive("/profile")} expanded={expanded} />
       </div>
     </motion.nav>
   );
 }
 
 function NavRow({
-  to, label, Icon, active, expanded,
+  to, search, label, Icon, active, expanded,
 }: {
-  to: string; label: string; Icon: typeof MessageCircle; active: boolean; expanded: boolean;
+  to: string; search?: Record<string, string>; label: string; Icon: typeof MessageCircle; active: boolean; expanded: boolean;
 }) {
   return (
     <Link
       to={to}
+      search={search}
       className="group relative flex h-12 items-center gap-3 rounded-2xl px-[15px] text-[14px] font-semibold"
       style={{ color: active ? "var(--primary)" : "var(--muted-foreground)" }}
     >
