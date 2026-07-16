@@ -14,7 +14,7 @@ const NAV_ITEMS = (base: "dashboard" | "customer") => [
 const PROFILE_ITEM = { label: "Profile", icon: User } as const;
 
 /** Width reserved in page layouts for the collapsed rail (icons-only). Kept in sync
- * with the `w-20` class below — if that changes, update the `md:pl-20` usages too. */
+ * with the `w-20` class below — if that changes, update the `lg:pl-20` usages too. */
 export const SIDEBAR_COLLAPSED_WIDTH = 80;
 
 export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
@@ -32,7 +32,7 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
       initial={false}
       animate={{ width: expanded ? 232 : SIDEBAR_COLLAPSED_WIDTH }}
       transition={{ type: "spring", stiffness: 420, damping: 38 }}
-      className="fixed inset-y-0 left-0 z-[35] hidden flex-col overflow-hidden border-r py-5 md:flex"
+      className="fixed inset-y-0 left-0 z-[35] hidden flex-col overflow-hidden border-r py-5 lg:flex"
       style={{
         background: "color-mix(in oklab, var(--background) 72%, transparent)",
         backdropFilter: "blur(24px) saturate(180%)",
