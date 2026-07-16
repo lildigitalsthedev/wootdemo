@@ -8,20 +8,22 @@ export function AppShell({
   children,
   right,
   hideProfile = false,
+  noPadX = false,
 }: {
   title: string;
   base: "dashboard" | "customer";
   children: ReactNode;
   right?: ReactNode;
   hideProfile?: boolean;
+  noPadX?: boolean;
 }) {
   void base;
   void hideProfile;
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col bg-background md:max-w-4xl lg:max-w-6xl">
-      <header className="sticky top-0 z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl md:px-8">
+    <div className="flex min-h-[100dvh] w-full flex-1 flex-col bg-background md:min-h-0">
+      <header className="sticky top-0 z-20 grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl md:px-6">
         <div className="min-w-0">
-          <h1 className="truncate text-[22px] font-black tracking-tight md:text-3xl">{title}</h1>
+          <h1 className="truncate text-[22px] font-black tracking-tight md:text-2xl">{title}</h1>
         </div>
         <div className="flex shrink-0 items-center gap-1">
           {right}
@@ -33,7 +35,7 @@ export function AppShell({
           </button>
         </div>
       </header>
-      <main className="flex-1 md:px-4">{children}</main>
+      <main className={`flex min-h-0 min-w-0 flex-1 flex-col ${noPadX ? "" : "md:overflow-y-auto md:px-4"}`}>{children}</main>
     </div>
   );
 }
