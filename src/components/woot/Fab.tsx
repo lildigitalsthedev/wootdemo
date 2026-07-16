@@ -36,7 +36,7 @@ export function Fab({ actions }: { actions: FabAction[] }) {
           />
         )}
       </AnimatePresence>
-      <div ref={ref} className="pointer-events-none fixed inset-x-0 bottom-24 z-40 mx-auto max-w-3xl px-4">
+      <div ref={ref} className="pointer-events-none fixed inset-x-0 bottom-24 z-40 mx-auto max-w-3xl px-4 md:absolute md:inset-x-auto md:bottom-6 md:right-6 md:max-w-none md:px-0">
         <div className="pointer-events-auto flex flex-col items-end gap-2">
           <AnimatePresence>
             {open &&
