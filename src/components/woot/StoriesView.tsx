@@ -13,22 +13,22 @@ export function StoriesView() {
   const communities = COMMUNITIES.filter((c) => c.name.toLowerCase().includes(commSearch.toLowerCase()));
   return (
     <div className="px-4 py-2">
-      <h2 className="mt-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">My Status</h2>
-      <button className="mt-2 grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-3xl border bg-card p-3 text-left shadow-soft hover:bg-accent/40">
-        <span className="relative">
-          <span className="grid h-14 w-14 place-items-center rounded-full text-[15px] font-bold text-white" style={{ background: ME.color }}>{ME.avatar}</span>
-          <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 place-items-center rounded-full border-2 border-background bg-primary text-white">
-            <Plus size={12} strokeWidth={3} />
+      <h2 className="mt-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Recent Updates</h2>
+      <div className="no-scrollbar relative mt-3 flex gap-3 overflow-x-auto pb-1">
+        <button
+          className="sticky left-0 z-10 flex w-20 shrink-0 flex-col items-center gap-1.5 pr-2"
+          style={{
+            background: "linear-gradient(to right, var(--background) 78%, color-mix(in oklab, var(--background) 0%, transparent) 100%)",
+          }}
+        >
+          <span className="relative">
+            <span className="grid h-16 w-16 place-items-center rounded-full text-[15px] font-bold text-white" style={{ background: ME.color }}>{ME.avatar}</span>
+            <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 place-items-center rounded-full border-2 border-background bg-primary text-white">
+              <Plus size={12} strokeWidth={3} />
+            </span>
           </span>
-        </span>
-        <div>
-          <div className="text-[15px] font-semibold">Add Story</div>
-          <div className="text-[12px] text-muted-foreground">Share a moment with your followers</div>
-        </div>
-      </button>
-
-      <h2 className="mt-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Recent Updates</h2>
-      <div className="no-scrollbar mt-3 flex gap-3 overflow-x-auto pb-1">
+          <span className="w-full truncate text-center text-[11px] font-semibold">My Status</span>
+        </button>
         {STORIES.map((s) => (
           <motion.button key={s.id} whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} className="flex w-20 shrink-0 flex-col items-center gap-1.5">
             <span className="rounded-full p-[2px]" style={{ background: s.seen ? "var(--border)" : "conic-gradient(from 180deg at 50% 50%, #2F6BFF, #7c3aed, #f97316, #2F6BFF)" }}>
