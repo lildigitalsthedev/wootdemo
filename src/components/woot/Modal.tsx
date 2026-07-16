@@ -35,15 +35,18 @@ export function Modal({
         >
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
           <motion.div
-            initial={{ y: 40, opacity: 0, scale: 0.98 }}
+            initial={{ y: 60, opacity: 0, scale: 0.97 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 24, opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ y: 32, opacity: 0, scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 380, damping: 32 }}
             className="relative z-10 flex max-h-[85dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border bg-background shadow-card sm:rounded-3xl"
           >
+            <div className="flex justify-center pt-2 sm:hidden">
+              <span className="h-1 w-10 rounded-full bg-muted-foreground/25" />
+            </div>
             <div className="flex items-center justify-between border-b px-5 py-3.5">
               <h3 className="text-[17px] font-bold tracking-tight">{title}</h3>
-              <button onClick={onClose} className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
+              <button onClick={onClose} className="grid h-9 w-9 place-items-center rounded-full transition-transform hover:scale-105 hover:bg-accent active:scale-95">
                 <X size={16} />
               </button>
             </div>
