@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Plus } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import type { LucideIcon } from "lucide-react";
 
 export type FabAction = {
@@ -12,7 +13,13 @@ export type FabAction = {
 
 export function Fab({ actions }: { actions: FabAction[] }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  // Portal target must only be touched after mount (no `document` during SSR).
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
@@ -22,7 +29,17 @@ export function Fab({ actions }: { actions: FabAction[] }) {
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
-  return (
+  if (!mounted) return null;
+
+  // Rendered via a portal straight onto <body>. This is what keeps the FAB
+  // truly fixed to the viewport: any ancestor in the normal tree (e.g. the
+  // page-transition wrapper, which sets `will-change: transform` while
+  // animating) creates a new containing block for `position: fixed`
+  // descendants, which is exactly what was pinning this button to the
+  // bottom of the scrollable section instead of floating above it.
+  // Portaling to <body> sidesteps that entirely, regardless of what any
+  // future ancestor wrapper does with transforms/filters/will-change.
+  return createPortal(
     <>
       <AnimatePresence>
         {open && (
@@ -82,6 +99,7 @@ export function Fab({ actions }: { actions: FabAction[] }) {
           </motion.button>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   );
 }
