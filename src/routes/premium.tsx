@@ -213,13 +213,16 @@ function PremiumPage() {
                         {p.id === "enterprise" ? (
                           <>
                             <div className="text-[11px] font-medium text-muted-foreground">Starts at</div>
-                            <div className="text-[22px] font-black leading-tight tracking-tight">{formatStartsAtMonthly(p, currency)}</div>
-                            <div className="text-[11px] text-muted-foreground">{formatStartsAtYearly(p, currency)}</div>
+                            <div className="text-[22px] font-black leading-tight tracking-tight">
+                              {cycle === "monthly" ? formatStartsAtMonthly(p, currency) : formatStartsAtYearly(p, currency)}
+                            </div>
                           </>
                         ) : (
                           <>
                             <div className="text-[22px] font-black tracking-tight">{price}</div>
-                            <div className="text-[11px] text-muted-foreground">{cycle === "monthly" ? "/ month" : hasYearly ? "/ year" : ""}</div>
+                            <div className="text-[11px] text-muted-foreground">
+                              {p.id === "free" ? "" : cycle === "monthly" ? "/ month" : hasYearly ? "/ year" : ""}
+                            </div>
                           </>
                         )}
                       </div>
