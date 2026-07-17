@@ -36,25 +36,26 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
               className="group relative flex min-w-[62px] flex-col items-center justify-center gap-1 rounded-full px-2.5 py-2 tap-highlight-transparent select-none sm:min-w-[72px]"
               style={{ color: active ? "var(--primary)" : "var(--muted-foreground)" }}
             >
-              {active && (
-                <motion.span
-                  layoutId="bottom-nav-pill"
-                  className="absolute inset-0 -z-0 rounded-full"
-                  style={{
-                    background:
-                      "color-mix(in oklab, var(--primary) 14%, transparent)",
-                    boxShadow:
-                      "inset 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent)",
-                  }}
-                  transition={{ type: "spring", stiffness: 520, damping: 38, mass: 0.7 }}
-                />
-              )}
               <motion.span
                 className="relative z-10 flex h-6 items-center justify-center"
                 animate={{ scale: active ? 1.06 : 1 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 500, damping: 28, mass: 0.6 }}
               >
+                {active && (
+                  <motion.span
+                    layoutId="bottom-nav-pill"
+                    className="absolute -z-10 rounded-full"
+                    style={{
+                      width: 36,
+                      height: 36,
+                      background: "color-mix(in oklab, var(--primary) 16%, transparent)",
+                      boxShadow:
+                        "inset 0 1px 0 0 color-mix(in oklab, white 35%, transparent), inset 0 0 0 1px color-mix(in oklab, var(--primary) 26%, transparent)",
+                    }}
+                    transition={{ type: "spring", stiffness: 520, damping: 38, mass: 0.7 }}
+                  />
+                )}
                 {it.kind === "profile" ? (
                   <NavAvatar size={18} active={active} />
                 ) : it.kind === "stories" ? (
