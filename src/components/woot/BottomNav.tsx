@@ -19,7 +19,7 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
       aria-label="Primary"
     >
       <div
-        className="pointer-events-auto flex items-stretch gap-1 rounded-full border px-2 py-2 shadow-card"
+        className="pointer-events-auto flex items-stretch gap-1.5 rounded-full border px-3 py-2 shadow-card sm:gap-2 sm:px-3.5"
         style={{
           background: "color-mix(in oklab, var(--background) 55%, transparent)",
           backdropFilter: "blur(24px) saturate(180%)",
@@ -33,26 +33,32 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
               key={it.to}
               to={it.to}
               search={"search" in it ? it.search : undefined}
-              className="group relative flex min-w-[54px] flex-col items-center gap-0.5 rounded-full px-2 py-1.5 sm:min-w-[68px]"
+              className="group relative flex min-w-[62px] flex-col items-center justify-center gap-1 rounded-full px-2.5 py-2 tap-highlight-transparent select-none sm:min-w-[72px]"
               style={{ color: active ? "var(--primary)" : "var(--muted-foreground)" }}
             >
               {active && (
                 <motion.span
                   layoutId="bottom-nav-pill"
                   className="absolute inset-0 -z-0 rounded-full"
-                  style={{ background: "color-mix(in oklab, var(--primary) 16%, transparent)" }}
-                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  style={{
+                    background:
+                      "color-mix(in oklab, var(--primary) 14%, transparent)",
+                    boxShadow:
+                      "inset 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent)",
+                  }}
+                  transition={{ type: "spring", stiffness: 520, damping: 38, mass: 0.7 }}
                 />
               )}
               <motion.span
-                className="relative z-10"
-                animate={{ scale: active ? 1.08 : 1, y: active ? -1 : 0 }}
-                transition={{ type: "spring", stiffness: 480, damping: 26 }}
+                className="relative z-10 flex h-6 items-center justify-center"
+                animate={{ scale: active ? 1.06 : 1 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 500, damping: 28, mass: 0.6 }}
               >
                 {it.kind === "profile" ? (
-                  <NavAvatar size={20} active={active} />
+                  <NavAvatar size={18} active={active} />
                 ) : it.kind === "stories" ? (
-                  <StoriesIcon size={22} hasStories active={active} />
+                  <StoriesIcon size={20} hasStories active={active} />
                 ) : (
                   <it.icon size={20} strokeWidth={active ? 2.4 : 2} />
                 )}
