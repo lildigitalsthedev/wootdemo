@@ -1,12 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { z } from "zod";
-import { ArrowLeft, Globe, Lock, MapPin, Search as SearchIcon, SlidersHorizontal } from "lucide-react";
+import { ArrowLeft, MapPin, Search as SearchIcon, SlidersHorizontal } from "lucide-react";
 import { BUSINESSES, SEARCH_PLACEHOLDERS } from "@/lib/mock-data";
 import { BusinessCard } from "@/components/woot/BusinessCard";
 import { RotatingPlaceholder } from "@/components/woot/RotatingPlaceholder";
 import { PageTransition } from "@/components/woot/PageTransition";
+import { CountryIcon } from "@/components/woot/CountryIcon";
+import { useUserCountry } from "@/lib/countries";
 
 const search = z.object({ q: z.string().optional().catch(undefined) });
 
@@ -16,7 +18,33 @@ export const Route = createFileRoute("/search")({
   component: SearchPage,
 });
 
-type Scope = "global" | "private" | "nearby";
+type Scope = "nearby" | "country" | "global";
+
+/**
+ * Cleaner, more modern "worldwide" glyph than lucide's default Globe icon —
+ * simplified latitude/longitude grid on a circle, tuned to sit well at
+ * small sizes next to the other scope icons.
+ */
+function GlobalIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="shrink-0"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <ellipse cx="12" cy="12" rx="4" ry="9" />
+      <path d="M3 12h18M4.5 7.5h15M4.5 16.5h15" />
+    </svg>
+  );
+}
 
 function SearchPage() {
   const { q } = Route.useSearch();
@@ -24,9 +52,13 @@ function SearchPage() {
   const [query, setQuery] = useState(q ?? "");
   const [scope, setScope] = useState<Scope>("nearby");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const { country } = useUserCountry();
 
   const results = useMemo(() => {
-    const base = scope === "private" ? BUSINESSES.slice(0, 5) : scope === "nearby" ? BUSINESSES.slice(0, 12) : BUSINESSES;
+    // "nearby" narrows to the closest businesses; "country" widens to
+    // everything within the user's detected country; "global" is unfiltered.
+    const base =
+      scope === "nearby" ? BUSINESSES.slice(0, 12) : scope === "country" ? BUSINESSES : BUSINESSES;
     if (!query.trim()) return base;
     const q = query.toLowerCase();
     return base.filter((b) =>
@@ -37,11 +69,13 @@ function SearchPage() {
     );
   }, [query, scope]);
 
-  const scopes: { k: Scope; label: string; icon: typeof Globe }[] = [
-    { k: "global", label: "Global", icon: Globe },
-    { k: "private", label: "Private", icon: Lock },
-    { k: "nearby", label: "Nearby", icon: MapPin },
+  const scopes: { k: Scope; label: string; icon: ReactNode }[] = [
+    { k: "nearby", label: "Nearby", icon: <MapPin size={14} /> },
+    { k: "country", label: country.name, icon: <CountryIcon country={country} size={14} /> },
+    { k: "global", label: "Global", icon: <GlobalIcon size={14} /> },
   ];
+
+  const scopeResultsLabel = scope === "nearby" ? "nearby" : scope === "country" ? country.name : "global";
 
   return (
     <PageTransition>
@@ -70,14 +104,13 @@ function SearchPage() {
           </div>
           <div className="grid grid-cols-3 gap-1 px-4 pb-3">
             {scopes.map((s) => {
-              const Icon = s.icon;
               const active = scope === s.k;
               return (
                 <button key={s.k} onClick={() => setScope(s.k)}
                   className="relative flex items-center justify-center gap-1.5 rounded-full py-2 text-[13px] font-semibold"
                   style={{ color: active ? "white" : "var(--muted-foreground)" }}>
                   {active && <motion.span layoutId="scope-pill" className="absolute inset-0 rounded-full bg-primary shadow-soft" transition={{ type: "spring", stiffness: 400, damping: 32 }} />}
-                  <span className="relative inline-flex items-center gap-1.5"><Icon size={14} /> {s.label}</span>
+                  <span className="relative inline-flex items-center gap-1.5">{s.icon} {s.label}</span>
                 </button>
               );
             })}
@@ -87,7 +120,7 @@ function SearchPage() {
         <div className="px-4 py-4">
           <div className="mb-3 flex items-baseline justify-between">
             <p className="text-sm text-muted-foreground">
-              {results.length} {scope === "nearby" ? "nearby" : scope} results {query ? `for "${query}"` : ""}
+              {results.length} {scopeResultsLabel} results {query ? `for "${query}"` : ""}
             </p>
           </div>
           <div className="grid gap-4">
