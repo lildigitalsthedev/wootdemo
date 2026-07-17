@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { ArrowLeft, User, Bell, Lock, Palette, Languages, Shield, Smartphone, HardDrive, Sparkles, HelpCircle, Info, UserPlus, ChevronRight, Sun, Moon, MonitorSmartphone, AtSign, Link as LinkIcon } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { ME } from "@/lib/mock-data";
+import { ME, useMe } from "@/lib/mock-data";
 import { PageTransition } from "@/components/woot/PageTransition";
 import { Sidebar } from "@/components/woot/Sidebar";
 import { applyTheme, getStoredTheme, type Theme } from "@/lib/theme";
@@ -48,6 +48,7 @@ function SettingsPage() {
   const base: "dashboard" | "customer" = from === "customer" ? "customer" : "dashboard";
   const [open, setOpen] = useState<string | null>(null);
   const [theme, setTheme] = useState<Theme>("system");
+  const me = useMe();
 
   useEffect(() => { setTheme(getStoredTheme()); }, []);
   const changeTheme = (t: Theme) => { setTheme(t); applyTheme(t); };
@@ -65,7 +66,9 @@ function SettingsPage() {
 
           <div className="px-4 pt-4 md:mx-auto md:max-w-xl">
             <Link to="/profile" search={{ from: base }} className="flex items-center gap-3 rounded-3xl border bg-card p-3 shadow-soft hover:bg-accent/40">
-              <span className="grid h-14 w-14 place-items-center rounded-full text-[14px] font-black text-white" style={{ background: ME.color }}>{ME.avatar}</span>
+              <span className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full text-[14px] font-black text-white" style={{ background: me.avatarUrl ? undefined : me.color }}>
+                {me.avatarUrl ? <img src={me.avatarUrl} alt={me.name} className="h-full w-full object-cover" /> : me.avatar}
+              </span>
               <div className="min-w-0 flex-1">
                 <div className="truncate text-[15px] font-bold">{ME.name}</div>
                 <div className="truncate text-[12px] text-muted-foreground">{ME.handle} · {ME.dm}</div>
