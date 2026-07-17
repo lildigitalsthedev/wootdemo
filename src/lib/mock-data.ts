@@ -580,3 +580,95 @@ export function useMe(): MeProfile {
  * `useMe()` inside components so the UI reacts to profile-picture changes.
  */
 export const ME = INITIAL_ME;
+
+// --- Tiny reactive store for the customer's cart & favorites -------------
+// Mirrors the useMe() pattern above. Customers don't get shop-creation
+// tools — their "+" action in Shop is about building their own cart/
+// favorites, including redeeming a cart code a friend shared with them.
+export type CartLine = { productId: string; qty: number };
+
+type CartState = {
+  lines: CartLine[];
+  favoriteProductIds: Set<string>;
+  favoriteCategories: Set<string>;
+};
+
+let cartState: CartState = {
+  lines: [],
+  favoriteProductIds: new Set(),
+  favoriteCategories: new Set(),
+};
+const cartListeners = new Set<() => void>();
+
+function cartSubscribe(listener: () => void) {
+  cartListeners.add(listener);
+  return () => cartListeners.delete(listener);
+}
+
+function cartSnapshot() {
+  return cartState;
+}
+
+function emitCart() {
+  cartListeners.forEach((listener) => listener());
+}
+
+/** Add a product to the cart (or increase its quantity if already in it). */
+export function addToCart(productId: string, qty = 1) {
+  const existing = cartState.lines.find((l) => l.productId === productId);
+  const lines = existing
+    ? cartState.lines.map((l) => (l.productId === productId ? { ...l, qty: l.qty + qty } : l))
+    : [...cartState.lines, { productId, qty }];
+  cartState = { ...cartState, lines };
+  emitCart();
+}
+
+export function removeFromCart(productId: string) {
+  cartState = { ...cartState, lines: cartState.lines.filter((l) => l.productId !== productId) };
+  emitCart();
+}
+
+export function toggleFavoriteProduct(productId: string) {
+  const next = new Set(cartState.favoriteProductIds);
+  next.has(productId) ? next.delete(productId) : next.add(productId);
+  cartState = { ...cartState, favoriteProductIds: next };
+  emitCart();
+}
+
+export function toggleFavoriteCategory(category: string) {
+  const next = new Set(cartState.favoriteCategories);
+  next.has(category) ? next.delete(category) : next.add(category);
+  cartState = { ...cartState, favoriteCategories: next };
+  emitCart();
+}
+
+/**
+ * Redeem a cart code (e.g. shared by a friend) and merge its contents into
+ * the current cart. In this demo, codes are generated client-side by
+ * encoding the current cart, so any code produced by "Share cart" can be
+ * pasted back in here — no backend required.
+ */
+export function redeemCartCode(code: string): { ok: true } | { ok: false; error: string } {
+  try {
+    const decoded = JSON.parse(atob(code.trim())) as CartLine[];
+    if (!Array.isArray(decoded)) throw new Error("bad payload");
+    decoded.forEach((l) => {
+      if (typeof l.productId === "string" && typeof l.qty === "number") {
+        addToCart(l.productId, l.qty);
+      }
+    });
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "That code doesn't look right. Double-check it and try again." };
+  }
+}
+
+/** Encode the current cart into a shareable code (the inverse of redeemCartCode). */
+export function currentCartCode(): string {
+  return btoa(JSON.stringify(cartState.lines));
+}
+
+/** React hook: subscribe to the customer's cart & favorites. Re-renders automatically when they change. */
+export function useCart(): CartState {
+  return useSyncExternalStore(cartSubscribe, cartSnapshot, cartSnapshot);
+}
