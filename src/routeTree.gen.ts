@@ -19,6 +19,7 @@ import { Route as CustomerRouteImport } from './routes/customer'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as CustomerIndexRouteImport } from './routes/customer.index'
+import { Route as StoryIdRouteImport } from './routes/story.$id'
 import { Route as DashboardStoriesRouteImport } from './routes/dashboard.stories'
 import { Route as DashboardShopRouteImport } from './routes/dashboard.shop'
 import { Route as DashboardChatsRouteImport } from './routes/dashboard.chats'
@@ -81,6 +82,11 @@ const CustomerIndexRoute = CustomerIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => CustomerRoute,
+} as any)
+const StoryIdRoute = StoryIdRouteImport.update({
+  id: '/story/$id',
+  path: '/story/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardStoriesRoute = DashboardStoriesRouteImport.update({
   id: '/stories',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/chats': typeof DashboardChatsRoute
   '/dashboard/shop': typeof DashboardShopRoute
   '/dashboard/stories': typeof DashboardStoriesRoute
+  '/story/$id': typeof StoryIdRoute
   '/customer/': typeof CustomerIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/dashboard/chats': typeof DashboardChatsRoute
   '/dashboard/shop': typeof DashboardShopRoute
   '/dashboard/stories': typeof DashboardStoriesRoute
+  '/story/$id': typeof StoryIdRoute
   '/customer': typeof CustomerIndexRoute
   '/dashboard': typeof DashboardIndexRoute
 }
@@ -211,6 +219,7 @@ export interface FileRoutesById {
   '/dashboard/chats': typeof DashboardChatsRoute
   '/dashboard/shop': typeof DashboardShopRoute
   '/dashboard/stories': typeof DashboardStoriesRoute
+  '/story/$id': typeof StoryIdRoute
   '/customer/': typeof CustomerIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -237,6 +246,7 @@ export interface FileRouteTypes {
     | '/dashboard/chats'
     | '/dashboard/shop'
     | '/dashboard/stories'
+    | '/story/$id'
     | '/customer/'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/dashboard/chats'
     | '/dashboard/shop'
     | '/dashboard/stories'
+    | '/story/$id'
     | '/customer'
     | '/dashboard'
   id:
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/dashboard/chats'
     | '/dashboard/shop'
     | '/dashboard/stories'
+    | '/story/$id'
     | '/customer/'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
@@ -299,6 +311,7 @@ export interface RootRouteChildren {
   BusinessIdRoute: typeof BusinessIdRoute
   CallIdRoute: typeof CallIdRoute
   ChatIdRoute: typeof ChatIdRoute
+  StoryIdRoute: typeof StoryIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -372,6 +385,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/customer/'
       preLoaderRoute: typeof CustomerIndexRouteImport
       parentRoute: typeof CustomerRoute
+    }
+    '/story/$id': {
+      id: '/story/$id'
+      path: '/story/$id'
+      fullPath: '/story/$id'
+      preLoaderRoute: typeof StoryIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/dashboard/stories': {
       id: '/dashboard/stories'
@@ -514,7 +534,18 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessIdRoute: BusinessIdRoute,
   CallIdRoute: CallIdRoute,
   ChatIdRoute: ChatIdRoute,
+  StoryIdRoute: StoryIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
