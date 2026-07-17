@@ -58,13 +58,13 @@ function SettingsPage() {
       <Sidebar base={base} />
       <PageTransition>
         <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:h-[100dvh] md:min-h-0 md:overflow-y-auto">
-          <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl md:px-6 lg:bg-background lg:backdrop-blur-none">
+          <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl md:px-6 lg:bg-background lg:backdrop-blur-none">
             <button onClick={() => nav({ to: "/profile", search: { from: base } })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></button>
-            <h1 className="text-[17px] font-bold">Settings</h1>
-            <div />
+            <h1 className="text-center text-[17px] font-bold">Settings</h1>
+            <div className="h-10 w-10" />
           </header>
 
-          <div className="px-4 pt-4 md:mx-auto md:max-w-xl">
+          <div className="mx-auto w-full max-w-xl px-4 pt-4">
             <Link to="/profile" search={{ from: base }} className="flex items-center gap-3 rounded-3xl border bg-card p-3 shadow-soft hover:bg-accent/40">
               <span className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full text-[14px] font-black text-white" style={{ background: me.avatarUrl ? undefined : me.color }}>
                 {me.avatarUrl ? <img src={me.avatarUrl} alt={me.name} className="h-full w-full object-cover" /> : me.avatar}
