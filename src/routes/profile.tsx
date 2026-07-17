@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
+import { useRef } from "react";
 import { z } from "zod";
-import { ArrowLeft, Copy, QrCode, Share2, Store, Star, Users, Crown, ExternalLink, Pencil, Settings as SettingsIcon, ShoppingBag } from "lucide-react";
-import { ME } from "@/lib/mock-data";
+import { ArrowLeft, Copy, QrCode, Share2, Store, Star, Users, Crown, ExternalLink, Pencil, Settings as SettingsIcon, ShoppingBag, Camera } from "lucide-react";
+import { useMe, updateMe } from "@/lib/mock-data";
 import { PageTransition } from "@/components/woot/PageTransition";
 import { VerifiedBadge } from "@/components/woot/Logo";
 import { Sidebar } from "@/components/woot/Sidebar";
@@ -20,6 +21,23 @@ function ProfilePage() {
   const nav = useNavigate();
   const { from } = Route.useSearch();
   const base: "dashboard" | "customer" = from === "customer" ? "customer" : "dashboard";
+  const me = useMe();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePickPhoto = () => fileInputRef.current?.click();
+
+  const handlePhotoSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        updateMe({ avatarUrl: reader.result });
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = ""; // allow re-selecting the same file later
+  };
 
   return (
     // Same shell shape as dashboard.tsx / customer.tsx so Profile behaves like a
@@ -37,12 +55,36 @@ function ProfilePage() {
 
             <div className="px-4 pt-6 md:mx-auto md:max-w-xl">
               <div className="flex flex-col items-center text-center">
-                <motion.span initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="grid h-24 w-24 place-items-center rounded-full text-[26px] font-black text-white shadow-card" style={{ background: ME.color }}>{ME.avatar}</motion.span>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoSelected}
+                />
+                <motion.button
+                  type="button"
+                  onClick={handlePickPhoto}
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="relative grid h-24 w-24 place-items-center overflow-hidden rounded-full text-[26px] font-black text-white shadow-card"
+                  style={{ background: me.avatarUrl ? undefined : me.color }}
+                  aria-label="Change profile picture"
+                >
+                  {me.avatarUrl ? (
+                    <img src={me.avatarUrl} alt={me.name} className="h-full w-full object-cover" />
+                  ) : (
+                    me.avatar
+                  )}
+                  <span className="absolute -bottom-0.5 -right-0.5 grid h-7 w-7 place-items-center rounded-full border-2 border-background bg-primary text-white">
+                    <Camera size={13} strokeWidth={2.5} />
+                  </span>
+                </motion.button>
                 <div className="mt-3 flex items-center gap-1.5">
-                  <span className="text-[22px] font-black tracking-tight">{ME.name}</span>
-                  {ME.verified && <VerifiedBadge />}
+                  <span className="text-[22px] font-black tracking-tight">{me.name}</span>
+                  {me.verified && <VerifiedBadge />}
                 </div>
-                <div className="text-[13px] text-muted-foreground">{ME.handle} · {ME.role}</div>
+                <div className="text-[13px] text-muted-foreground">{me.handle} · {me.role}</div>
 
                 <div className="mt-4 flex flex-wrap justify-center gap-2">
                   <button className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3.5 py-2 text-[12px] font-semibold shadow-soft hover:bg-accent"><Copy size={14} /> Copy DM link</button>
@@ -53,9 +95,9 @@ function ProfilePage() {
 
               <div className="mt-6 grid grid-cols-3 gap-3">
                 {[
-                  { icon: Users, label: "Followers", value: ME.followers.toLocaleString() },
-                  { icon: Star, label: "Reviews", value: ME.reviews.toLocaleString() },
-                  { icon: Crown, label: "Plan", value: ME.plan },
+                  { icon: Users, label: "Followers", value: me.followers.toLocaleString() },
+                  { icon: Star, label: "Reviews", value: me.reviews.toLocaleString() },
+                  { icon: Crown, label: "Plan", value: me.plan },
                 ].map((s) => (
                   <div key={s.label} className="flex flex-col items-center rounded-2xl border bg-card p-3 shadow-soft">
                     <s.icon size={16} className="text-primary" />
@@ -69,7 +111,7 @@ function ProfilePage() {
                 <div className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Business Quick Access</div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { icon: Pencil, label: "Edit Profile" },
+                    { icon: Pencil, label: "Edit Profile", onClick: handlePickPhoto },
                     { icon: Store, label: "Edit Storefront" },
                     { icon: ShoppingBag, label: "My Shop" },
                     { icon: Share2, label: "Share DM Link" },
@@ -78,7 +120,7 @@ function ProfilePage() {
                     { icon: ExternalLink, label: "View Public Store" },
                     { icon: Crown, label: "Current Subscription" },
                   ].map((a) => (
-                    <button key={a.label} className="flex items-center gap-2 rounded-2xl border bg-background p-3 text-left text-[13px] font-semibold hover:bg-accent">
+                    <button key={a.label} onClick={a.onClick} className="flex items-center gap-2 rounded-2xl border bg-background p-3 text-left text-[13px] font-semibold hover:bg-accent">
                       <a.icon size={15} className="text-primary" />
                       <span className="truncate">{a.label}</span>
                     </button>
