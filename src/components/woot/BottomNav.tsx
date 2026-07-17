@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { MessageCircle, Phone, Store } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 import { motion } from "motion/react";
 import { StoriesIcon } from "@/components/StoriesIcon";
+import { ShopIcon } from "@/components/ShopIcon";
 import { NavAvatar } from "./NavAvatar";
 
 export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
@@ -10,7 +11,7 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
     { to: `/${base}/chats`, label: "Chats", icon: MessageCircle, kind: "lucide" as const },
     { to: `/${base}/stories`, label: "Stories", icon: MessageCircle, kind: "stories" as const },
     { to: `/${base}/calls`, label: "Calls", icon: Phone, kind: "lucide" as const },
-    { to: `/${base}/shop`, label: "Shop", icon: Store, kind: "lucide" as const },
+    { to: `/${base}/shop`, label: "Shop", icon: MessageCircle, kind: "shop" as const },
     { to: `/profile`, label: "Profile", icon: MessageCircle, kind: "profile" as const, search: { from: base } },
   ] as const;
   return (
@@ -60,6 +61,12 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
                   <NavAvatar size={18} active={active} />
                 ) : it.kind === "stories" ? (
                   <StoriesIcon size={20} hasStories active={active} />
+                ) : it.kind === "shop" ? (
+                  <ShopIcon
+                    size={20}
+                    active={active}
+                    className={active ? "drop-shadow-[0_1px_6px_color-mix(in_oklab,var(--primary)_55%,transparent)]" : undefined}
+                  />
                 ) : (
                   <it.icon
                     size={20}
