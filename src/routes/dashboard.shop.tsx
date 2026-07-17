@@ -5,6 +5,8 @@ import { BarChart3, Boxes, Layers, Package, Plus, Settings, ShoppingBag, Store, 
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/woot/AppShell";
 import { PageTransition } from "@/components/woot/PageTransition";
+import { Fab } from "@/components/woot/Fab";
+import { Modal } from "@/components/woot/Modal";
 import { BUSINESSES, ORDERS, productsFor } from "@/lib/mock-data";
 
 const tabs = [
@@ -17,6 +19,8 @@ const tabs = [
 ] as const;
 type Tab = typeof tabs[number]["k"];
 
+type CreateKind = "product" | "category" | "collection" | "store";
+
 export const Route = createFileRoute("/dashboard/shop")({
   head: () => ({ meta: [{ title: "Shop — Woot Business" }] }),
   component: ShopEditor,
@@ -24,10 +28,25 @@ export const Route = createFileRoute("/dashboard/shop")({
 
 function ShopEditor() {
   const [tab, setTab] = useState<Tab>("products");
+  const [createModal, setCreateModal] = useState<null | CreateKind>(null);
   const me = BUSINESSES[1];
   const products = productsFor(me.id);
 
   const activeTab = tabs.find((t) => t.k === tab)!;
+
+  // The header "New" button and the mobile FAB both open the modal that
+  // matches whatever tab is currently active, so "New" always means
+  // "new thing for what I'm looking at right now".
+  const newForTab: Record<Tab, CreateKind> = {
+    products: "product",
+    store: "store",
+    catalog: "collection",
+    analytics: "product",
+    orders: "product",
+    categories: "category",
+  };
+
+  const openCreateForTab = () => setCreateModal(newForTab[tab]);
 
   return (
     <AppShell
@@ -35,7 +54,7 @@ function ShopEditor() {
       base="dashboard"
       noPadX
       right={
-        <button className="hidden sm:inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft">
+        <button onClick={openCreateForTab} className="hidden sm:inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft">
           <Plus size={14} /> New
         </button>
       }
@@ -65,7 +84,7 @@ function ShopEditor() {
             })}
           </div>
           <div className="px-4 py-4">
-            <TabBody tab={tab} me={me} products={products} />
+            <TabBody tab={tab} me={me} products={products} onCreate={setCreateModal} />
           </div>
         </div>
 
@@ -102,16 +121,33 @@ function ShopEditor() {
                 <activeTab.icon size={16} className="text-primary" />
                 {activeTab.label}
               </div>
-              <button className="inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft">
+              <button onClick={openCreateForTab} className="inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft">
                 <Plus size={14} /> New
               </button>
             </div>
             <div className="px-6 py-5">
-              <TabBody tab={tab} me={me} products={products} />
+              <TabBody tab={tab} me={me} products={products} onCreate={setCreateModal} />
             </div>
           </section>
         </div>
       </PageTransition>
+
+      {/* Mobile / tablet only — desktop uses the header's + New button.
+          Actions cover everything a business owner can add to their shop:
+          new product, new category, new catalog collection, and store
+          details, mirroring how Chats/Calls/Stories expose their FAB. */}
+      <div className="lg:hidden">
+        <Fab
+          actions={[
+            { label: "New Product", icon: Package, onClick: () => setCreateModal("product") },
+            { label: "New Category", icon: Tag, onClick: () => setCreateModal("category"), tint: "#db2777" },
+            { label: "New Collection", icon: Layers, onClick: () => setCreateModal("collection"), tint: "#0ea5e9" },
+            { label: "Edit Store", icon: Store, onClick: () => setCreateModal("store"), tint: "#15803d" },
+          ]}
+        />
+      </div>
+
+      <CreateModals kind={createModal} onClose={() => setCreateModal(null)} me={me} />
     </AppShell>
   );
 }
@@ -151,22 +187,22 @@ function StoreCard({ me, compact = false }: { me: typeof BUSINESSES[number]; com
 
 type Products = ReturnType<typeof productsFor>;
 
-function TabBody({ tab, me, products }: { tab: Tab; me: typeof BUSINESSES[number]; products: Products }) {
+function TabBody({ tab, me, products, onCreate }: { tab: Tab; me: typeof BUSINESSES[number]; products: Products; onCreate: (k: CreateKind) => void }) {
   return (
     <AnimatePresence mode="wait">
       <motion.div key={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }}>
-        {tab === "products" && <ProductsTab products={products} />}
+        {tab === "products" && <ProductsTab products={products} onCreate={onCreate} />}
         {tab === "store" && <StoreTab me={me} />}
-        {tab === "catalog" && <CatalogTab />}
+        {tab === "catalog" && <CatalogTab onCreate={onCreate} />}
         {tab === "analytics" && <AnalyticsTab />}
         {tab === "orders" && <OrdersTab />}
-        {tab === "categories" && <CategoriesTab />}
+        {tab === "categories" && <CategoriesTab onCreate={onCreate} />}
       </motion.div>
     </AnimatePresence>
   );
 }
 
-function ProductsTab({ products }: { products: Products }) {
+function ProductsTab({ products, onCreate }: { products: Products; onCreate: (k: CreateKind) => void }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
       {products.map((p) => (
@@ -182,7 +218,7 @@ function ProductsTab({ products }: { products: Products }) {
           </div>
         </div>
       ))}
-      <button className="grid aspect-square place-items-center rounded-3xl border-2 border-dashed border-border text-muted-foreground transition hover:border-primary hover:text-primary">
+      <button onClick={() => onCreate("product")} className="grid aspect-square place-items-center rounded-3xl border-2 border-dashed border-border text-muted-foreground transition hover:border-primary hover:text-primary">
         <div className="text-center">
           <Plus className="mx-auto" size={22} />
           <div className="mt-1 text-xs font-semibold">Add product</div>
@@ -215,7 +251,7 @@ function StoreTab({ me }: { me: typeof BUSINESSES[number] }) {
   );
 }
 
-function CatalogTab() {
+function CatalogTab({ onCreate }: { onCreate: (k: CreateKind) => void }) {
   return (
     <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
       {["Bestsellers", "New", "Weekend Specials", "Seasonal"].map((c) => (
@@ -228,6 +264,12 @@ function CatalogTab() {
           <button className="rounded-full border px-3 py-1.5 text-xs font-semibold">Edit</button>
         </div>
       ))}
+      <button onClick={() => onCreate("collection")} className="grid place-items-center rounded-2xl border-2 border-dashed border-border p-4 text-muted-foreground transition hover:border-primary hover:text-primary sm:col-span-2 xl:col-span-1">
+        <div className="text-center">
+          <Plus className="mx-auto" size={18} />
+          <div className="mt-1 text-xs font-semibold">New collection</div>
+        </div>
+      </button>
     </div>
   );
 }
@@ -282,7 +324,7 @@ function OrdersTab() {
   );
 }
 
-function CategoriesTab() {
+function CategoriesTab({ onCreate }: { onCreate: (k: CreateKind) => void }) {
   const cats: { name: string; count: number; tint: string }[] = [
     { name: "Coffee & Espresso", count: 12, tint: "#7c3aed" },
     { name: "Pastries", count: 9, tint: "#f97316" },
@@ -305,12 +347,118 @@ function CategoriesTab() {
           <button className="rounded-full border px-3 py-1.5 text-xs font-semibold hover:bg-accent">Edit</button>
         </div>
       ))}
-      <button className="grid place-items-center rounded-2xl border-2 border-dashed border-border p-4 text-muted-foreground transition hover:border-primary hover:text-primary">
+      <button onClick={() => onCreate("category")} className="grid place-items-center rounded-2xl border-2 border-dashed border-border p-4 text-muted-foreground transition hover:border-primary hover:text-primary">
         <div className="text-center">
           <Plus className="mx-auto" size={18} />
           <div className="mt-1 text-xs font-semibold">New category</div>
         </div>
       </button>
     </div>
+  );
+}
+
+/**
+ * The four "create" flows a business owner reaches from either the header
+ * "+ New" button or the mobile FAB. Kept intentionally simple (mock forms,
+ * no real persistence) to match the rest of this demo's editable surfaces.
+ */
+function CreateModals({ kind, onClose, me }: { kind: CreateKind | null; onClose: () => void; me: typeof BUSINESSES[number] }) {
+  return (
+    <>
+      <Modal
+        open={kind === "product"}
+        onClose={onClose}
+        title="New Product"
+        footer={
+          <div className="flex justify-end">
+            <button onClick={onClose} className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-soft">Save product</button>
+          </div>
+        }
+      >
+        <div className="space-y-4 p-4">
+          <div>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Product name</label>
+            <input placeholder="e.g. Cold Brew Concentrate" className="mt-1.5 h-11 w-full rounded-2xl border bg-card px-3 text-sm outline-none focus:border-primary" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Price</label>
+              <input placeholder="$0.00" className="mt-1.5 h-11 w-full rounded-2xl border bg-card px-3 text-sm outline-none focus:border-primary" />
+            </div>
+            <div>
+              <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Stock</label>
+              <input placeholder="0" className="mt-1.5 h-11 w-full rounded-2xl border bg-card px-3 text-sm outline-none focus:border-primary" />
+            </div>
+          </div>
+          <div>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Description</label>
+            <textarea placeholder="What makes this product worth buying?" rows={3} className="mt-1.5 w-full rounded-2xl border bg-card px-3 py-2.5 text-sm outline-none focus:border-primary" />
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={kind === "category"}
+        onClose={onClose}
+        title="New Category"
+        footer={
+          <div className="flex justify-end">
+            <button onClick={onClose} className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-soft">Create category</button>
+          </div>
+        }
+      >
+        <div className="space-y-4 p-4">
+          <div>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Category name</label>
+            <input placeholder="e.g. Cold Drinks" className="mt-1.5 h-11 w-full rounded-2xl border bg-card px-3 text-sm outline-none focus:border-primary" />
+          </div>
+          <div>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Color tag</label>
+            <div className="mt-1.5 flex gap-2">
+              {["#7c3aed", "#f97316", "#0ea5e9", "#15803d", "#db2777", "#f59e0b"].map((c) => (
+                <button key={c} type="button" className="h-8 w-8 rounded-full border-2 border-transparent focus:border-foreground" style={{ background: c }} aria-label={c} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={kind === "collection"}
+        onClose={onClose}
+        title="New Collection"
+        footer={
+          <div className="flex justify-end">
+            <button onClick={onClose} className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-soft">Create collection</button>
+          </div>
+        }
+      >
+        <div className="space-y-4 p-4">
+          <div>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Collection name</label>
+            <input placeholder="e.g. Weekend Specials" className="mt-1.5 h-11 w-full rounded-2xl border bg-card px-3 text-sm outline-none focus:border-primary" />
+          </div>
+          <div>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Description</label>
+            <textarea placeholder="What ties these products together?" rows={3} className="mt-1.5 w-full rounded-2xl border bg-card px-3 py-2.5 text-sm outline-none focus:border-primary" />
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={kind === "store"}
+        onClose={onClose}
+        title="Edit Store"
+        footer={
+          <div className="flex justify-end">
+            <button onClick={onClose} className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-soft">Save changes</button>
+          </div>
+        }
+      >
+        <div className="p-4">
+          <StoreTab me={me} />
+        </div>
+      </Modal>
+    </>
   );
 }
