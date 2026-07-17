@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { Plus, Search, Type, Mic, Camera, Video, Users } from "lucide-react";
 import { STORIES, COMMUNITIES, ME } from "@/lib/mock-data";
 import { BusinessAvatar } from "./BusinessAvatar";
+import { StoryRing } from "./StoryRing";
 import { Fab } from "./Fab";
 import { Modal } from "./Modal";
 
@@ -40,7 +41,9 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
           }}
         >
           <span className="relative">
-            <span className="grid h-16 w-16 place-items-center rounded-full text-[15px] font-bold text-white" style={{ background: ME.color }}>{ME.avatar}</span>
+            <StoryRing size={64} hasStories={false} strokeWidth={2.25}>
+              <span className="grid h-full w-full place-items-center text-[15px] font-bold text-white" style={{ background: ME.color }}>{ME.avatar}</span>
+            </StoryRing>
             <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 place-items-center rounded-full border-2 border-background bg-primary text-white">
               <Plus size={12} strokeWidth={3} />
             </span>
@@ -49,14 +52,11 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
         </button>
         {STORIES.map((s) => {
           const active = activeId === s.id;
-          const ring = { background: s.seen ? "var(--border)" : "conic-gradient(from 180deg at 50% 50%, #2F6BFF, #7c3aed, #f97316, #2F6BFF)" };
           const inner = (
             <>
-              <span className="rounded-full p-[2px]" style={ring}>
-                <span className="block rounded-full bg-background p-[2px]">
-                  <BusinessAvatar b={s.business} rounded="rounded-full" size={60} />
-                </span>
-              </span>
+              <StoryRing size={64} hasStories={!s.seen} seen={s.seen} active={active} strokeWidth={2.25}>
+                <BusinessAvatar b={s.business} rounded="rounded-full" size={56} />
+              </StoryRing>
               <span className="w-full truncate text-center text-[11px] font-medium">{s.business.name}</span>
             </>
           );
