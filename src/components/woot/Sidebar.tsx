@@ -253,7 +253,11 @@ function NavRow({
         <motion.span
           layoutId="sidebar-nav-pill"
           className="absolute inset-0 -z-0 rounded-2xl"
-          style={{ background: "color-mix(in oklab, var(--primary) 14%, transparent)" }}
+          style={{
+            background: "color-mix(in oklab, var(--primary) 14%, transparent)",
+            boxShadow:
+              "inset 0 1px 0 0 color-mix(in oklab, white 30%, transparent), inset 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent)",
+          }}
           transition={{ type: "spring", stiffness: 420, damping: 34 }}
         />
       )}
