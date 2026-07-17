@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Plus, Search, Type, Mic, Camera, Video, Users } from "lucide-react";
-import { STORIES, COMMUNITIES, ME } from "@/lib/mock-data";
+import { STORIES, COMMUNITIES, useMe } from "@/lib/mock-data";
 import { BusinessAvatar } from "./BusinessAvatar";
 import { StoryRing } from "./StoryRing";
 import { Fab } from "./Fab";
@@ -11,6 +11,7 @@ import { Modal } from "./Modal";
 type Composer = "text" | "voice" | "photo" | "video";
 
 export function StoriesView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
+  const me = useMe();
   const [commSearch, setCommSearch] = useState("");
   const [showCommSearch, setShowCommSearch] = useState(false);
   const [createComm, setCreateComm] = useState(false);
@@ -42,7 +43,11 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
         >
           <span className="relative">
             <StoryRing size={64} hasStories={false} strokeWidth={2.25}>
-              <span className="grid h-full w-full place-items-center text-[15px] font-bold text-white" style={{ background: ME.color }}>{ME.avatar}</span>
+              {me.avatarUrl ? (
+                <img src={me.avatarUrl} alt={me.name} className="h-full w-full object-cover" />
+              ) : (
+                <span className="grid h-full w-full place-items-center text-[15px] font-bold text-white" style={{ background: me.color }}>{me.avatar}</span>
+              )}
             </StoryRing>
             <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 place-items-center rounded-full border-2 border-background bg-primary text-white">
               <Plus size={12} strokeWidth={3} />
