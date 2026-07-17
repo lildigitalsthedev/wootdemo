@@ -544,7 +544,7 @@ const INITIAL_ME: MeProfile = {
   business: "Sole Society",
   followers: 12483,
   reviews: 1284,
-  plan: "Medium Business",
+  plan: "Growth",
 };
 
 // --- Tiny reactive store for the logged-in user's profile ---------------
