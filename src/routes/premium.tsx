@@ -37,7 +37,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "small", name: "Small Business", monthlyUsd: 3.99, yearlyUsd: 39.99, monthlyNgn: 3999, yearlyNgn: 39999,
+    id: "small", name: "Starter", monthlyUsd: 3.99, yearlyUsd: 39.99, monthlyNgn: 3999, yearlyNgn: 39999,
     summary: "Grow with catalogue, hours, and referrals. Save ~17% yearly.",
     features: [
       "Everything in Free",
@@ -49,11 +49,11 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "medium", name: "Medium Business", monthlyUsd: 7.99, yearlyUsd: 79.99, monthlyNgn: 7999, yearlyNgn: 79999,
+    id: "medium", name: "Growth", monthlyUsd: 7.99, yearlyUsd: 79.99, monthlyNgn: 7999, yearlyNgn: 79999,
     highlight: true,
     summary: "For growing teams — boosts, verification, and team inbox.",
     features: [
-      "Everything in Small",
+      "Everything in Starter",
       "100 AI Credits (expandable)", "Medium Search Boost", "Medium Story Boost",
       "Business Tags", "Auto Reply", "Advanced Business Profile",
       "Broadcast Lists", "Verified Badge", "Saved Replies", "Quick Replies",
@@ -62,10 +62,10 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "large", name: "Large Business", monthlyUsd: 15.99, yearlyUsd: 159.99, monthlyNgn: 15999, yearlyNgn: 159999,
+    id: "large", name: "Scale", monthlyUsd: 15.99, yearlyUsd: 159.99, monthlyNgn: 15999, yearlyNgn: 159999,
     summary: "Scale with AI automations, CRM, and custom domain.",
     features: [
-      "Everything in Medium",
+      "Everything in Growth",
       "Large Search Boost", "Large Story Boost", "Group Search Toggle",
       "Trending Businesses", "Business Recommendations", "Website + Custom Domain",
       "AI Auto Reply Bot", "AI Recommended Actions", "Communities",
@@ -80,7 +80,7 @@ const PLANS: Plan[] = [
     id: "enterprise", name: "Enterprise", monthlyUsd: 59.99, yearlyUsd: 599.99, monthlyNgn: 59999, yearlyNgn: 599999,
     summary: "Custom AI, SSO, integrations, and a dedicated team.",
     features: [
-      "Everything in Large",
+      "Everything in Scale",
       "Unlimited Branches", "Unlimited Staff", "Department Management",
       "SSO", "Advanced Permissions", "Audit Logs", "Compliance Tools",
       "Custom AI trained on company documents", "AI Knowledge Base",
