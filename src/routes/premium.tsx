@@ -37,7 +37,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "small", name: "Small Business", monthlyUsd: 2.99, yearlyUsd: 29.99, monthlyNgn: 2999, yearlyNgn: 29999,
+    id: "small", name: "Small Business", monthlyUsd: 3.99, yearlyUsd: 39.99, monthlyNgn: 3999, yearlyNgn: 39999,
     summary: "Grow with catalogue, hours, and referrals. Save ~17% yearly.",
     features: [
       "Everything in Free",
@@ -49,7 +49,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "medium", name: "Medium Business", monthlyUsd: 6.99, yearlyUsd: 69.99, monthlyNgn: 6999, yearlyNgn: 69999,
+    id: "medium", name: "Medium Business", monthlyUsd: 7.99, yearlyUsd: 79.99, monthlyNgn: 7999, yearlyNgn: 79999,
     highlight: true,
     summary: "For growing teams — boosts, verification, and team inbox.",
     features: [
@@ -62,7 +62,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "large", name: "Large Business", monthlyUsd: 14.99, yearlyUsd: 149.99, monthlyNgn: 14999, yearlyNgn: 149999,
+    id: "large", name: "Large Business", monthlyUsd: 15.99, yearlyUsd: 159.99, monthlyNgn: 15999, yearlyNgn: 159999,
     summary: "Scale with AI automations, CRM, and custom domain.",
     features: [
       "Everything in Medium",
@@ -77,7 +77,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "enterprise", name: "Enterprise", monthlyUsd: 49.99, yearlyUsd: 499.99, monthlyNgn: 49999, yearlyNgn: 499999,
+    id: "enterprise", name: "Enterprise", monthlyUsd: 59.99, yearlyUsd: 599.99, monthlyNgn: 59999, yearlyNgn: 599999,
     summary: "Custom AI, SSO, integrations, and a dedicated team.",
     features: [
       "Everything in Large",
@@ -134,6 +134,18 @@ function formatPrice(plan: Plan, cycle: "monthly" | "yearly", currency: Currency
   }
   const usd = cycle === "monthly" ? plan.monthlyUsd : (plan.yearlyUsd ?? plan.monthlyUsd);
   return usd === 0 ? "$0" : `$${usd.toFixed(2)}`;
+}
+
+/** Enterprise-only: the fixed monthly "starts at" figure, regardless of the Monthly/Yearly toggle. */
+function formatStartsAtMonthly(plan: Plan, currency: Currency) {
+  return currency === "NGN" ? `₦${plan.monthlyNgn.toLocaleString("en-NG")}/month` : `$${plan.monthlyUsd.toFixed(2)}/month`;
+}
+
+/** Enterprise-only: the fixed yearly "starts at" figure, regardless of the Monthly/Yearly toggle. */
+function formatStartsAtYearly(plan: Plan, currency: Currency) {
+  const ngn = plan.yearlyNgn ?? plan.monthlyNgn * 10;
+  const usd = plan.yearlyUsd ?? plan.monthlyUsd * 10;
+  return currency === "NGN" ? `₦${ngn.toLocaleString("en-NG")}/year` : `$${usd.toFixed(2)}/year`;
 }
 
 function PremiumPage() {
@@ -198,8 +210,18 @@ function PremiumPage() {
                         <p className="mt-1 text-[13px] text-muted-foreground">{p.summary}</p>
                       </div>
                       <div className="text-right">
-                        <div className="text-[22px] font-black tracking-tight">{price}</div>
-                        <div className="text-[11px] text-muted-foreground">{cycle === "monthly" ? "/ month" : hasYearly ? "/ year" : ""}</div>
+                        {p.id === "enterprise" ? (
+                          <>
+                            <div className="text-[11px] font-medium text-muted-foreground">Starts at</div>
+                            <div className="text-[22px] font-black leading-tight tracking-tight">{formatStartsAtMonthly(p, currency)}</div>
+                            <div className="text-[11px] text-muted-foreground">{formatStartsAtYearly(p, currency)}</div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="text-[22px] font-black tracking-tight">{price}</div>
+                            <div className="text-[11px] text-muted-foreground">{cycle === "monthly" ? "/ month" : hasYearly ? "/ year" : ""}</div>
+                          </>
+                        )}
                       </div>
                     </div>
                     <div className="mt-4 flex items-center gap-2">
