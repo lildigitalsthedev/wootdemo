@@ -1,18 +1,20 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  MessageCircle, Sparkles, Phone, Store, User, Plus, Users, Megaphone, ListPlus,
+  MessageCircle, Phone, Store, Plus, Users, Megaphone, ListPlus,
   Type, Mic, Camera, Video, PhoneCall, PhoneOutgoing, Users2, Package,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { WootLogo } from "./Logo";
+import { StoriesIcon } from "@/components/StoriesIcon";
+import { NavAvatar } from "./NavAvatar";
 
 const NAV_ITEMS = (base: "dashboard" | "customer") => [
-  { to: `/${base}/chats`, label: "Chats", icon: MessageCircle },
-  { to: `/${base}/stories`, label: "Stories", icon: Sparkles },
-  { to: `/${base}/calls`, label: "Calls", icon: Phone },
-  { to: `/${base}/shop`, label: "Shop", icon: Store },
+  { to: `/${base}/chats`, label: "Chats", icon: MessageCircle, kind: "lucide" as const },
+  { to: `/${base}/stories`, label: "Stories", icon: MessageCircle, kind: "stories" as const },
+  { to: `/${base}/calls`, label: "Calls", icon: Phone, kind: "lucide" as const },
+  { to: `/${base}/shop`, label: "Shop", icon: Store, kind: "lucide" as const },
 ] as const;
 
 export const SIDEBAR_COLLAPSED_WIDTH = 80;
@@ -98,7 +100,7 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
   const triggerAction = (kind: string) => {
     const dispatch = () =>
       window.dispatchEvent(new CustomEvent(cfg.event, { detail: { kind } }));
-    const sectionPath = `/\( {base}/ \){section}` as const;
+    const sectionPath = `/${base}/${section}` as const;
     setAddOpen(false);
     if (!pathname.startsWith(sectionPath)) {
       void navigate({ to: sectionPath }).then(() => setTimeout(dispatch, 30));
@@ -141,7 +143,20 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
 
       <div className="flex flex-1 flex-col gap-1 px-3">
         {items.map((it) => (
-          <NavRow key={it.to} to={it.to} label={it.label} Icon={it.icon} active={isActive(it.to)} expanded={expanded} />
+          <NavRow
+            key={it.to}
+            to={it.to}
+            label={it.label}
+            active={isActive(it.to)}
+            expanded={expanded}
+            renderIcon={(active) =>
+              it.kind === "stories" ? (
+                <StoriesIcon size={20} hasStories active={active} />
+              ) : (
+                <it.icon size={19} strokeWidth={active ? 2.4 : 2} />
+              )
+            }
+          />
         ))}
       </div>
 
@@ -180,9 +195,9 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
           to="/profile"
           search={{ from: base }}
           label="Profile"
-          Icon={User}
           active={isActive("/profile")}
           expanded={expanded}
+          renderIcon={(active) => <NavAvatar size={19} active={active} />}
         />
 
         <AnimatePresence>
@@ -223,9 +238,9 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
 }
 
 function NavRow({
-  to, search, label, Icon, active, expanded,
+  to, search, label, renderIcon, active, expanded,
 }: {
-  to: string; search?: Record<string, string>; label: string; Icon: LucideIcon; active: boolean; expanded: boolean;
+  to: string; search?: Record<string, string>; label: string; renderIcon: (active: boolean) => ReactNode; active: boolean; expanded: boolean;
 }) {
   return (
     <Link
@@ -243,7 +258,7 @@ function NavRow({
         />
       )}
       <span className="relative z-10 grid h-5 w-5 shrink-0 place-items-center">
-        <Icon size={19} strokeWidth={active ? 2.4 : 2} />
+        {renderIcon(active)}
       </span>
       <AnimatePresence>
         {expanded && (
