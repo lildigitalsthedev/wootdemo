@@ -60,7 +60,12 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
                 ) : it.kind === "stories" ? (
                   <StoriesIcon size={20} hasStories active={active} />
                 ) : (
-                  <it.icon size={20} strokeWidth={active ? 2.4 : 2} />
+                  <it.icon
+                    size={20}
+                    strokeWidth={active ? 2.2 : 2}
+                    fill={active ? "currentColor" : "none"}
+                    className={active ? "drop-shadow-[0_1px_6px_color-mix(in_oklab,var(--primary)_55%,transparent)]" : undefined}
+                  />
                 )}
               </motion.span>
               <motion.span

@@ -34,7 +34,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
   const direction = isTabToTab ? (currentIndex > prevIndex ? 1 : -1) : 0;
 
   if (reduceMotion) {
-    return <div>{children}</div>;
+    return <div className="w-full min-w-0 flex-1">{children}</div>;
   }
 
   return (
@@ -44,6 +44,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
       style={{ willChange: "transform, opacity" }}
+      className="w-full min-w-0 flex-1"
     >
       {children}
     </motion.div>
