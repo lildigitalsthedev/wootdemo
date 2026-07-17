@@ -136,16 +136,16 @@ function formatPrice(plan: Plan, cycle: "monthly" | "yearly", currency: Currency
   return usd === 0 ? "$0" : `$${usd.toFixed(2)}`;
 }
 
-/** Enterprise-only: the fixed monthly "starts at" figure, regardless of the Monthly/Yearly toggle. */
+/** Enterprise-only: the fixed monthly "starts at" figure (no suffix), regardless of the Monthly/Yearly toggle. */
 function formatStartsAtMonthly(plan: Plan, currency: Currency) {
-  return currency === "NGN" ? `₦${plan.monthlyNgn.toLocaleString("en-NG")}/month` : `$${plan.monthlyUsd.toFixed(2)}/month`;
+  return currency === "NGN" ? `₦${plan.monthlyNgn.toLocaleString("en-NG")}` : `$${plan.monthlyUsd.toFixed(2)}`;
 }
 
-/** Enterprise-only: the fixed yearly "starts at" figure, regardless of the Monthly/Yearly toggle. */
+/** Enterprise-only: the fixed yearly "starts at" figure (no suffix), regardless of the Monthly/Yearly toggle. */
 function formatStartsAtYearly(plan: Plan, currency: Currency) {
   const ngn = plan.yearlyNgn ?? plan.monthlyNgn * 10;
   const usd = plan.yearlyUsd ?? plan.monthlyUsd * 10;
-  return currency === "NGN" ? `₦${ngn.toLocaleString("en-NG")}/year` : `$${usd.toFixed(2)}/year`;
+  return currency === "NGN" ? `₦${ngn.toLocaleString("en-NG")}` : `$${usd.toFixed(2)}`;
 }
 
 function PremiumPage() {
@@ -216,6 +216,7 @@ function PremiumPage() {
                             <div className="text-[22px] font-black leading-tight tracking-tight">
                               {cycle === "monthly" ? formatStartsAtMonthly(p, currency) : formatStartsAtYearly(p, currency)}
                             </div>
+                            <div className="text-[11px] text-muted-foreground">{cycle === "monthly" ? "/ month" : "/ year"}</div>
                           </>
                         ) : (
                           <>
