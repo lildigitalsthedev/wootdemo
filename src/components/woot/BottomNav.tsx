@@ -1,15 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { MessageCircle, Sparkles, Phone, Store, User } from "lucide-react";
+import { MessageCircle, Phone, Store } from "lucide-react";
 import { motion } from "motion/react";
+import { StoriesIcon } from "@/components/StoriesIcon";
+import { NavAvatar } from "./NavAvatar";
 
 export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const items = [
-    { to: `/${base}/chats`, label: "Chats", icon: MessageCircle },
-    { to: `/${base}/stories`, label: "Stories", icon: Sparkles },
-    { to: `/${base}/calls`, label: "Calls", icon: Phone },
-    { to: `/${base}/shop`, label: "Shop", icon: Store },
-    { to: `/profile`, label: "Profile", icon: User, search: { from: base } },
+    { to: `/${base}/chats`, label: "Chats", icon: MessageCircle, kind: "lucide" as const },
+    { to: `/${base}/stories`, label: "Stories", icon: MessageCircle, kind: "stories" as const },
+    { to: `/${base}/calls`, label: "Calls", icon: Phone, kind: "lucide" as const },
+    { to: `/${base}/shop`, label: "Shop", icon: Store, kind: "lucide" as const },
+    { to: `/profile`, label: "Profile", icon: MessageCircle, kind: "profile" as const, search: { from: base } },
   ] as const;
   return (
     <nav
@@ -26,7 +28,6 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
       >
         {items.map((it) => {
           const active = pathname === it.to || pathname.startsWith(it.to + "/");
-          const Icon = it.icon;
           return (
             <Link
               key={it.to}
@@ -48,7 +49,13 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
                 animate={{ scale: active ? 1.08 : 1, y: active ? -1 : 0 }}
                 transition={{ type: "spring", stiffness: 480, damping: 26 }}
               >
-                <Icon size={20} strokeWidth={active ? 2.4 : 2} />
+                {it.kind === "profile" ? (
+                  <NavAvatar size={20} active={active} />
+                ) : it.kind === "stories" ? (
+                  <StoriesIcon size={22} hasStories active={active} />
+                ) : (
+                  <it.icon size={20} strokeWidth={active ? 2.4 : 2} />
+                )}
               </motion.span>
               <motion.span
                 className="relative z-10 text-[10.5px] font-semibold leading-tight"
