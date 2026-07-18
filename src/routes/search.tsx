@@ -9,6 +9,7 @@ import { RotatingPlaceholder } from "@/components/woot/RotatingPlaceholder";
 import { PageTransition } from "@/components/woot/PageTransition";
 import { CountryIcon } from "@/components/woot/CountryIcon";
 import { useUserCountry } from "@/lib/countries";
+import { Sidebar } from "@/components/woot/Sidebar";
 
 const search = z.object({ q: z.string().optional().catch(undefined) });
 
@@ -79,10 +80,12 @@ function SearchPage() {
 
   return (
     <PageTransition>
-      <div className="mx-auto min-h-screen max-w-3xl bg-background">
+      <div className="min-h-screen bg-background lg:pl-20">
+        <Sidebar base="customer" />
+        <div className="mx-auto max-w-3xl lg:max-w-2xl">
         <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur-xl">
-          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 px-4 py-3">
-            <button onClick={() => navigate({ to: "/" })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 px-4 py-3 lg:grid-cols-1 lg:px-0 lg:pt-4">
+            <button onClick={() => navigate({ to: "/" })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent lg:hidden">
               <ArrowLeft size={18} />
             </button>
             <div className="relative flex items-center rounded-full border bg-card px-3 shadow-soft">
@@ -102,7 +105,7 @@ function SearchPage() {
               </button>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-1 px-4 pb-3">
+          <div className="grid grid-cols-3 gap-1 px-4 pb-3 lg:px-0">
             {scopes.map((s) => {
               const active = scope === s.k;
               return (
@@ -117,7 +120,7 @@ function SearchPage() {
           </div>
         </header>
 
-        <div className="px-4 py-4">
+        <div className="px-4 py-4 lg:px-0">
           <div className="mb-3 flex items-baseline justify-between">
             <p className="text-sm text-muted-foreground">
               {results.length} {scopeResultsLabel} results {query ? `for "${query}"` : ""}
@@ -137,6 +140,7 @@ function SearchPage() {
               </div>
             )}
           </div>
+        </div>
         </div>
       </div>
     </PageTransition>

@@ -49,11 +49,11 @@ export function Fab({ actions }: { actions: FabAction[] }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => setOpen(false)}
-            className="fixed inset-0 z-[25] bg-black/10 backdrop-blur-[1px]"
+            className="fixed inset-0 z-[25] bg-black/10 backdrop-blur-[1px] lg:hidden"
           />
         )}
       </AnimatePresence>
-      <div ref={ref} className="pointer-events-none fixed inset-x-0 bottom-24 z-40 mx-auto max-w-3xl px-4 md:inset-x-auto md:bottom-6 md:right-6 md:max-w-none md:px-0">
+      <div ref={ref} className="pointer-events-none fixed inset-x-0 bottom-24 z-40 mx-auto max-w-3xl px-4 lg:hidden">
         <div className="pointer-events-auto flex flex-col items-end gap-2">
           <AnimatePresence>
             {open &&

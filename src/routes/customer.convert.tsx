@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowLeft, ArrowRight, BarChart3, Check, MessageCircle, ShieldCheck, Store } from "lucide-react";
+import { Sidebar } from "@/components/woot/Sidebar";
 
 export const Route = createFileRoute("/customer/convert")({
   head: () => ({ meta: [{ title: "Become a Business — Woot" }] }),
@@ -10,9 +11,11 @@ export const Route = createFileRoute("/customer/convert")({
 function Convert() {
   const navigate = useNavigate();
   return (
-    <div className="mx-auto min-h-[100dvh] max-w-3xl bg-surface">
+    <div className="min-h-[100dvh] bg-surface lg:pl-20">
+      <Sidebar base="customer" />
+      <div className="mx-auto max-w-3xl">
       <header className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3">
-        <Link to="/customer/chats" className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></Link>
+        <Link to="/customer/chats" className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent lg:hidden"><ArrowLeft size={18} /></Link>
         <h1 className="truncate text-[17px] font-semibold">Become a business</h1>
         <span className="text-xs text-muted-foreground">Preview</span>
       </header>
@@ -60,6 +63,7 @@ function Convert() {
             </button>
           </div>
         </motion.div>
+      </div>
       </div>
     </div>
   );

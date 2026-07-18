@@ -7,6 +7,7 @@ import { BusinessAvatar } from "@/components/woot/BusinessAvatar";
 import { ImageSlideshow } from "@/components/woot/ImageSlideshow";
 import { VerifiedBadge } from "@/components/woot/Logo";
 import { PageTransition } from "@/components/woot/PageTransition";
+import { Sidebar } from "@/components/woot/Sidebar";
 
 const REVIEW_NAMES = ["Priya S.", "Marcus L.", "Ava C.", "Diego R.", "Nina P.", "Sam O."];
 const REVIEW_TEXT = [
@@ -59,14 +60,17 @@ function BusinessStore() {
 
   return (
     <PageTransition>
-      <div className="mx-auto min-h-screen max-w-3xl bg-background pb-24">
+      <div className="min-h-screen bg-background lg:pl-20">
+        <Sidebar base="customer" />
+        <div className="mx-auto max-w-3xl pb-24 lg:max-w-5xl">
         {/* Hero */}
         <div className="relative">
-          <ImageSlideshow images={b.images} className="aspect-[16/9]" />
+          <ImageSlideshow images={b.images} className="aspect-[16/9] lg:aspect-[21/7]" />
           <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-            <button onClick={() => navigate({ to: "/search" })} className="grid h-10 w-10 place-items-center rounded-full bg-white/90 shadow-soft backdrop-blur">
+            <button onClick={() => navigate({ to: "/search" })} className="grid h-10 w-10 place-items-center rounded-full bg-white/90 shadow-soft backdrop-blur lg:hidden">
               <ArrowLeft size={18} />
             </button>
+            <div className="lg:hidden" />
             <button className="relative grid h-10 w-10 place-items-center rounded-full bg-white/90 shadow-soft backdrop-blur">
               <ShoppingCart size={18} />
               {cartCount > 0 && (
@@ -80,12 +84,13 @@ function BusinessStore() {
         </div>
 
         {/* Head */}
-        <div className="px-4 pt-4">
+        <div className="px-4 pt-4 lg:grid lg:grid-cols-[1fr_auto] lg:items-start lg:gap-6 lg:px-0 lg:pt-6">
+          <div>
           <div className="flex items-start gap-3">
             <BusinessAvatar b={b} size={56} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h1 className="truncate text-xl font-black tracking-tight">{b.name}</h1>
+                <h1 className="truncate text-xl font-black tracking-tight lg:text-2xl">{b.name}</h1>
                 {b.verified && <VerifiedBadge />}
               </div>
               <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[12px] text-muted-foreground">
@@ -123,9 +128,10 @@ function BusinessStore() {
               </motion.div>
             )}
           </div>
+          </div>
 
           {/* Actions */}
-          <div className="mt-3 grid grid-cols-[1fr_auto_auto] gap-2">
+          <div className="mt-3 grid grid-cols-[1fr_auto_auto] gap-2 lg:mt-0 lg:w-72 lg:grid-cols-[1fr_auto_auto]">
             <Link to="/chat/$id" params={{ id: b.id }}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-card transition-transform hover:scale-[1.01]">
               <MessageCircle size={16} /> Send message
@@ -140,8 +146,8 @@ function BusinessStore() {
         </div>
 
         {/* Search + toggle */}
-        <div className="sticky top-0 z-10 mt-6 border-y bg-background/85 px-4 py-3 backdrop-blur-xl">
-          <div className="flex items-center gap-2 rounded-full border bg-card px-3 shadow-soft">
+        <div className="sticky top-0 z-10 mt-6 border-y bg-background/85 px-4 py-3 backdrop-blur-xl lg:px-0">
+          <div className="flex items-center gap-2 rounded-full border bg-card px-3 shadow-soft lg:max-w-sm">
             <SearchIcon size={16} className="text-muted-foreground" />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search ${tab === "product" ? "products" : "services"}`}
               className="h-10 flex-1 bg-transparent text-sm outline-none" />
@@ -149,7 +155,7 @@ function BusinessStore() {
               <Filter size={14} />
             </button>
           </div>
-          <div className="mt-3 grid grid-cols-2 rounded-full border bg-card p-1 shadow-soft">
+          <div className="mt-3 grid grid-cols-2 rounded-full border bg-card p-1 shadow-soft lg:max-w-xs">
             {(["product", "service"] as const).map((k) => {
               const active = tab === k;
               return (
@@ -164,7 +170,7 @@ function BusinessStore() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3 lg:grid-cols-4 lg:px-0">
           {items.map((p) => (
             <motion.div key={p.id} layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
               whileHover={{ y: -3 }}
@@ -196,14 +202,14 @@ function BusinessStore() {
         </div>
 
         {/* Reviews */}
-        <div className="border-t px-4 py-6">
+        <div className="border-t px-4 py-6 lg:px-0">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Reviews</h2>
             <span className="inline-flex items-center gap-1 text-[13px] font-semibold">
               <Star size={13} className="text-amber-500" fill="currentColor" /> {b.rating} · {b.reviews.toLocaleString()}
             </span>
           </div>
-          <div className="mt-3 grid gap-3">
+          <div className="mt-3 grid gap-3 lg:grid-cols-3">
             {reviews.map((r, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-20px" }}
                 className="rounded-2xl border bg-card p-3.5 shadow-soft">
@@ -224,13 +230,14 @@ function BusinessStore() {
 
         {cartCount > 0 && (
           <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-            className="fixed inset-x-0 bottom-4 z-40 mx-auto max-w-md px-4">
+            className="fixed inset-x-0 bottom-4 z-40 mx-auto max-w-md px-4 lg:inset-x-auto lg:right-6 lg:mx-0 lg:max-w-sm lg:px-0">
             <button className="flex w-full items-center justify-between gap-3 rounded-full bg-foreground px-5 py-3.5 text-sm font-semibold text-background shadow-card">
               <span className="inline-flex items-center gap-2"><ShoppingCart size={16} /> {cartCount} in cart</span>
               <span>Checkout →</span>
             </button>
           </motion.div>
         )}
+        </div>
       </div>
     </PageTransition>
   );

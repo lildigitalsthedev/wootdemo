@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Check, ChevronDown, Crown, Globe } from "lucide-react";
 import { PageTransition } from "@/components/woot/PageTransition";
+import { Sidebar } from "@/components/woot/Sidebar";
 
 export const Route = createFileRoute("/premium")({
   head: () => ({ meta: [{ title: "Woot Premium" }, { name: "description", content: "Upgrade your business with Woot Premium." }] }),
@@ -156,11 +157,13 @@ function PremiumPage() {
 
   return (
     <PageTransition>
-      <div className="mx-auto min-h-[100dvh] max-w-3xl bg-surface">
-        <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl">
-          <button onClick={() => nav({ to: "/profile" })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></button>
-          <h1 className="text-[17px] font-bold">Woot Premium</h1>
-          <div />
+      <div className="min-h-[100dvh] bg-surface lg:pl-20">
+        <Sidebar base="customer" />
+        <div className="mx-auto max-w-3xl">
+        <header className="sticky top-0 z-20 flex items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl">
+          <button onClick={() => nav({ to: "/profile" })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent lg:hidden"><ArrowLeft size={18} /></button>
+          <h1 className="flex-1 text-center text-[17px] font-bold lg:text-left">Woot Premium</h1>
+          <div className="w-10 lg:hidden" />
         </header>
 
         <div className="px-4 pb-16 pt-8">
@@ -268,6 +271,7 @@ function PremiumPage() {
           <p className="mt-8 text-center text-[11px] text-muted-foreground">
             {currency === "NGN" ? "Local pricing for Nigeria." : "Prices shown in USD."} Taxes may apply. Cancel anytime.
           </p>
+        </div>
         </div>
       </div>
     </PageTransition>
