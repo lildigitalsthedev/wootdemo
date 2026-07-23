@@ -54,10 +54,10 @@ function SettingsPage() {
   const changeTheme = (t: Theme) => { setTheme(t); applyTheme(t); };
 
   return (
-    <div className="flex min-h-[100dvh] w-full bg-surface md:h-[100dvh] md:min-h-0 md:overflow-hidden md:pl-20">
+    <div className="flex min-h-[100dvh] w-full bg-surface lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pl-20">
       <Sidebar base={base} />
       <PageTransition>
-        <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:h-[100dvh] md:min-h-0 md:overflow-y-auto">
+        <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:max-w-none lg:h-[100dvh] lg:min-h-0 lg:overflow-y-auto">
           <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl md:px-6 lg:bg-background lg:backdrop-blur-none">
             <button onClick={() => nav({ to: "/profile", search: { from: base } })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></button>
             <h1 className="text-center text-[17px] font-bold">Settings</h1>

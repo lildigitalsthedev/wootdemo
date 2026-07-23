@@ -46,7 +46,7 @@ function ProfilePage() {
       <Sidebar base={base} />
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col pb-28 md:max-w-none lg:min-h-0 lg:pb-0">
         <PageTransition>
-          <div className="mx-auto min-h-[100dvh] max-w-3xl bg-surface lg:min-h-0 lg:overflow-y-auto">
+          <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:max-w-none lg:min-h-0 lg:overflow-y-auto">
             <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl md:px-6 lg:bg-background lg:backdrop-blur-none">
               <button onClick={() => nav({ to: `/${base}/chats` })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></button>
               <h1 className="truncate text-[17px] font-bold">Profile</h1>
