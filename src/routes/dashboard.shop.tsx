@@ -1,13 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { BarChart3, Boxes, Layers, Package, Plus, Settings, ShoppingBag, Store, Tag, TrendingUp } from "lucide-react";
+import { ArrowLeftRight, BarChart3, Boxes, Layers, Package, Plus, Settings, ShoppingBag, Store, Tag, TrendingUp } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/woot/AppShell";
 import { PageTransition } from "@/components/woot/PageTransition";
 import { Fab } from "@/components/woot/Fab";
 import { Modal } from "@/components/woot/Modal";
+import { MarketplaceView } from "@/components/woot/Marketplace";
 import { BUSINESSES, ORDERS, productsFor } from "@/lib/mock-data";
+
+type ShopView = "market" | "manage";
 
 const tabs = [
   { k: "products", label: "Products", icon: Package },
@@ -27,12 +30,17 @@ export const Route = createFileRoute("/dashboard/shop")({
 });
 
 function ShopEditor() {
+  // Business owners land on the same Global Marketplace as everyone else.
+  // "manage" is an opt-in view they reach via the header toggle, for
+  // running their own store rather than buying from others.
+  const [view, setView] = useState<ShopView>("market");
   const [tab, setTab] = useState<Tab>("products");
   const [createModal, setCreateModal] = useState<null | CreateKind>(null);
   const me = BUSINESSES[1];
   const products = productsFor(me.id);
 
   const activeTab = tabs.find((t) => t.k === tab)!;
+  const isManaging = view === "manage";
 
   // The header "New" button and the mobile FAB both open the modal that
   // matches whatever tab is currently active, so "New" always means
@@ -50,49 +58,38 @@ function ShopEditor() {
 
   return (
     <AppShell
-      title="My Shop"
+      title={isManaging ? "My Business Shop" : "Shop"}
       base="dashboard"
       noPadX
       right={
-        <button onClick={openCreateForTab} className="hidden sm:inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft">
-          <Plus size={14} /> New
-        </button>
+        <div className="flex items-center gap-1">
+          {isManaging && (
+            <button onClick={openCreateForTab} className="hidden sm:inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft">
+              <Plus size={14} /> New
+            </button>
+          )}
+          <button
+            onClick={() => setView(isManaging ? "market" : "manage")}
+            aria-label={isManaging ? "Switch to Marketplace" : "Switch to My Business Shop"}
+            title={isManaging ? "Switch to Marketplace" : "Switch to My Business Shop"}
+            className="grid h-10 w-10 place-items-center rounded-full text-foreground hover:bg-accent"
+            style={isManaging ? { color: "var(--primary)", background: "color-mix(in oklab, var(--primary) 14%, transparent)" } : undefined}
+          >
+            {isManaging ? <ShoppingBag size={18} /> : <ArrowLeftRight size={18} />}
+          </button>
+        </div>
       }
     >
-      <PageTransition>
-        {/* Mobile / tablet layout — unchanged experience */}
-        <div className="lg:hidden">
-          <StoreCard me={me} />
-          <div className="no-scrollbar sticky top-[64px] z-10 mt-4 flex gap-2 overflow-x-auto border-b bg-background/90 px-4 py-2 backdrop-blur-xl">
-            {tabs.map((t) => {
-              const active = tab === t.k;
-              const Icon = t.icon;
-              return (
-                <button
-                  key={t.k}
-                  onClick={() => setTab(t.k)}
-                  className="relative inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
-                  style={{
-                    background: active ? "var(--primary)" : "var(--card)",
-                    color: active ? "white" : "var(--foreground)",
-                    border: active ? "none" : "1px solid var(--border)",
-                  }}
-                >
-                  <Icon size={13} /> {t.label}
-                </button>
-              );
-            })}
-          </div>
-          <div className="px-4 py-4">
-            <TabBody tab={tab} me={me} products={products} onCreate={setCreateModal} />
-          </div>
-        </div>
-
-        {/* Desktop master-detail: narrow shop nav + wide content panel */}
-        <div className="hidden min-h-0 flex-1 lg:flex">
-          <aside className="flex w-60 shrink-0 flex-col gap-3 overflow-y-auto border-r bg-background p-3">
-            <StoreCard me={me} compact />
-            <nav className="flex flex-col gap-1">
+      {!isManaging ? (
+        <PageTransition>
+          <MarketplaceView />
+        </PageTransition>
+      ) : (
+        <PageTransition>
+          {/* Mobile / tablet layout — unchanged experience */}
+          <div className="lg:hidden">
+            <StoreCard me={me} />
+            <div className="no-scrollbar sticky top-[64px] z-10 mt-4 flex gap-2 overflow-x-auto border-b bg-background/90 px-4 py-2 backdrop-blur-xl">
               {tabs.map((t) => {
                 const active = tab === t.k;
                 const Icon = t.icon;
@@ -100,52 +97,84 @@ function ShopEditor() {
                   <button
                     key={t.k}
                     onClick={() => setTab(t.k)}
-                    className="group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-[13px] font-semibold transition-colors"
+                    className="relative inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
                     style={{
-                      background: active ? "color-mix(in oklab, var(--primary) 14%, transparent)" : "transparent",
-                      color: active ? "var(--primary)" : "var(--foreground)",
+                      background: active ? "var(--primary)" : "var(--card)",
+                      color: active ? "white" : "var(--foreground)",
+                      border: active ? "none" : "1px solid var(--border)",
                     }}
                   >
-                    <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ background: active ? "var(--primary)" : "var(--accent)", color: active ? "white" : "var(--foreground)" }}>
-                      <Icon size={15} />
-                    </span>
-                    {t.label}
+                    <Icon size={13} /> {t.label}
                   </button>
                 );
               })}
-            </nav>
-          </aside>
-          <section className="min-w-0 flex-1 overflow-y-auto">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-background px-6 py-3">
-              <div className="flex items-center gap-2 text-[15px] font-bold">
-                <activeTab.icon size={16} className="text-primary" />
-                {activeTab.label}
-              </div>
-              <button onClick={openCreateForTab} className="inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft">
-                <Plus size={14} /> New
-              </button>
             </div>
-            <div className="px-6 py-5">
+            <div className="px-4 py-4">
               <TabBody tab={tab} me={me} products={products} onCreate={setCreateModal} />
             </div>
-          </section>
-        </div>
-      </PageTransition>
+          </div>
+
+          {/* Desktop master-detail: narrow shop nav + wide content panel */}
+          <div className="hidden min-h-0 flex-1 lg:flex">
+            <aside className="flex w-60 shrink-0 flex-col gap-3 overflow-y-auto border-r bg-background p-3">
+              <StoreCard me={me} compact />
+              <nav className="flex flex-col gap-1">
+                {tabs.map((t) => {
+                  const active = tab === t.k;
+                  const Icon = t.icon;
+                  return (
+                    <button
+                      key={t.k}
+                      onClick={() => setTab(t.k)}
+                      className="group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-[13px] font-semibold transition-colors"
+                      style={{
+                        background: active ? "color-mix(in oklab, var(--primary) 14%, transparent)" : "transparent",
+                        color: active ? "var(--primary)" : "var(--foreground)",
+                      }}
+                    >
+                      <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ background: active ? "var(--primary)" : "var(--accent)", color: active ? "white" : "var(--foreground)" }}>
+                        <Icon size={15} />
+                      </span>
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </nav>
+            </aside>
+            <section className="min-w-0 flex-1 overflow-y-auto">
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-background px-6 py-3">
+                <div className="flex items-center gap-2 text-[15px] font-bold">
+                  <activeTab.icon size={16} className="text-primary" />
+                  {activeTab.label}
+                </div>
+                <button onClick={openCreateForTab} className="inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft">
+                  <Plus size={14} /> New
+                </button>
+              </div>
+              <div className="px-6 py-5">
+                <TabBody tab={tab} me={me} products={products} onCreate={setCreateModal} />
+              </div>
+            </section>
+          </div>
+        </PageTransition>
+      )}
 
       {/* Mobile / tablet only — desktop uses the header's + New button.
           Actions cover everything a business owner can add to their shop:
           new product, new category, new catalog collection, and store
           details, mirroring how Chats/Calls/Stories expose their FAB. */}
-      <div className="lg:hidden">
-        <Fab
-          actions={[
-            { label: "New Product", icon: Package, onClick: () => setCreateModal("product") },
-            { label: "New Category", icon: Tag, onClick: () => setCreateModal("category"), tint: "#db2777" },
-            { label: "New Collection", icon: Layers, onClick: () => setCreateModal("collection"), tint: "#0ea5e9" },
-            { label: "Edit Store", icon: Store, onClick: () => setCreateModal("store"), tint: "#15803d" },
-          ]}
-        />
-      </div>
+      {isManaging && (
+        <div className="lg:hidden">
+          <Fab
+            actions={[
+              { label: "New Product", icon: Package, onClick: () => setCreateModal("product") },
+              { label: "New Category", icon: Tag, onClick: () => setCreateModal("category"), tint: "#db2777" },
+              { label: "New Collection", icon: Layers, onClick: () => setCreateModal("collection"), tint: "#0ea5e9" },
+              { label: "Edit Store", icon: Store, onClick: () => setCreateModal("store"), tint: "#15803d" },
+            ]}
+          />
+        </div>
+      )}
 
       <CreateModals kind={createModal} onClose={() => setCreateModal(null)} me={me} />
     </AppShell>
