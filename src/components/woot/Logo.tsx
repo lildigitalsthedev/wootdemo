@@ -20,7 +20,7 @@ export function WootLogo({ size = 28, mono = false }: { size?: number; mono?: bo
           <path d="M3 6l3 12 3-8 3 8 3-12 3 12 3-8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </motion.div>
-      <span className="text-[22px] font-black tracking-tight">Woot<span style={{ color: "var(--primary)" }}>.</span></span>
+      <span className="text-[22px] font-black tracking-tight">Glode<span style={{ color: "var(--primary)" }}>.</span></span>
     </div>
   );
 }
