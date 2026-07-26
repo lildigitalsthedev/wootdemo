@@ -9,6 +9,7 @@ import { PageTransition } from "@/components/woot/PageTransition";
 import { VerifiedBadge } from "@/components/woot/Logo";
 import { Sidebar } from "@/components/woot/Sidebar";
 import { BottomNav } from "@/components/woot/BottomNav";
+import { PremiumSheet } from "@/components/woot/PremiumSheet";
 
 const search = z.object({ from: z.enum(["dashboard", "customer"]).optional().catch(undefined) });
 
@@ -31,6 +32,7 @@ function ProfilePage() {
   const me = useMe();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [section, setSection] = useState<Section>("quick-access");
+  const [premiumOpen, setPremiumOpen] = useState(false);
 
   const handlePickPhoto = () => fileInputRef.current?.click();
 
@@ -58,16 +60,21 @@ function ProfilePage() {
         onClick={handlePickPhoto}
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="relative grid place-items-center overflow-hidden rounded-full font-black text-white shadow-card"
-        style={{ background: me.avatarUrl ? undefined : me.color, width: compact ? 88 : 96, height: compact ? 88 : 96, fontSize: compact ? 22 : 26 }}
+        className="relative grid place-items-center rounded-full font-black text-white shadow-card"
+        style={{ width: compact ? 88 : 96, height: compact ? 88 : 96 }}
         aria-label="Change profile picture"
       >
-        {me.avatarUrl ? (
-          <img src={me.avatarUrl} alt={me.name} className="h-full w-full object-cover" />
-        ) : (
-          me.avatar
-        )}
-        <span className="absolute -bottom-0.5 -right-0.5 grid h-7 w-7 place-items-center rounded-full border-2 border-background bg-primary text-white">
+        <div
+          className="grid h-full w-full place-items-center overflow-hidden rounded-full"
+          style={{ background: me.avatarUrl ? undefined : me.color, fontSize: compact ? 22 : 26 }}
+        >
+          {me.avatarUrl ? (
+            <img src={me.avatarUrl} alt={me.name} className="h-full w-full object-cover" />
+          ) : (
+            me.avatar
+          )}
+        </div>
+        <span className="absolute bottom-0 right-0 grid h-7 w-7 place-items-center rounded-full border-2 border-background bg-primary text-white">
           <Camera size={13} strokeWidth={2.5} />
         </span>
       </motion.button>
@@ -119,13 +126,13 @@ function ProfilePage() {
           </button>
         ))}
       </div>
-      <Link to="/premium" className="mt-3 flex items-center justify-between rounded-2xl bg-gradient-to-r from-primary to-purple-600 p-3.5 text-white shadow-soft">
-        <div>
+      <button onClick={() => setPremiumOpen(true)} className="mt-3 flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-primary to-purple-600 p-3.5 text-white shadow-soft">
+        <div className="text-left">
           <div className="text-[13px] font-bold">Upgrade to Woot Premium</div>
           <div className="text-[11px] text-white/80">Unlock analytics, boosts, and AI tools</div>
         </div>
         <Crown size={20} />
-      </Link>
+      </button>
     </div>
   );
 
@@ -148,6 +155,7 @@ function ProfilePage() {
     <div className="flex min-h-[100dvh] w-full bg-surface lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pl-20">
       <Sidebar base={base} />
       {photoInput}
+      <PremiumSheet open={premiumOpen} onClose={() => setPremiumOpen(false)} />
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col pb-28 md:max-w-none lg:min-h-0 lg:pb-0">
         <PageTransition>
           <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:max-w-none lg:flex lg:h-[100dvh] lg:min-h-0 lg:max-w-none">
