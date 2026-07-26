@@ -38,7 +38,7 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
               style={{ color: active ? "var(--primary)" : "var(--muted-foreground)" }}
             >
               <motion.span
-                className="relative z-10 flex h-6 items-center justify-center"
+                className="relative z-10 flex h-6 w-6 items-center justify-center"
                 animate={{ scale: active ? 1.06 : 1 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 500, damping: 28, mass: 0.6 }}
@@ -48,11 +48,10 @@ export function BottomNav({ base }: { base: "dashboard" | "customer" }) {
                     layoutId="bottom-nav-pill"
                     className="absolute -z-10 rounded-full"
                     style={{
-                      width: 36,
-                      height: 36,
+                      inset: -7,
                       background: "color-mix(in oklab, var(--primary) 16%, transparent)",
                       boxShadow:
-                        "inset 0 1px 0 0 color-mix(in oklab, white 35%, transparent), inset 0 0 0 1px color-mix(in oklab, var(--primary) 26%, transparent)",
+                        "inset 0 1px 0 0 color-mix(in oklab, white 45%, transparent), inset 0 -1px 0 0 color-mix(in oklab, black 8%, transparent), inset 0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent)",
                     }}
                     transition={{ type: "spring", stiffness: 520, damping: 38, mass: 0.7 }}
                   />
