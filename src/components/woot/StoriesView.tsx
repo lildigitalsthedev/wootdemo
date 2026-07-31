@@ -38,22 +38,14 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
         <button
           className="sticky left-0 z-10 flex w-20 shrink-0 flex-col items-center gap-1.5 pr-2"
           style={{
-            background: "linear-gradient(to right, var(--background) 78%, color-mix(in oklab, var(--background) 0%, transparent) 100%)",
+            background: "linear-gradient(to right, var(--background) 78%, transparent)",
           }}
+          onClick={() => setComposer("text")}
         >
-          <span className="relative">
-            <StoryRing size={64} hasStories={false} strokeWidth={2.25}>
-              {me.avatarUrl ? (
-                <img src={me.avatarUrl} alt={me.name} className="h-full w-full object-cover" />
-              ) : (
-                <span className="grid h-full w-full place-items-center text-[15px] font-bold text-white" style={{ background: me.color }}>{me.avatar}</span>
-              )}
-            </StoryRing>
-            <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 place-items-center rounded-full border-2 border-background bg-primary text-white">
-              <Plus size={12} strokeWidth={3} />
-            </span>
+          <span className="grid h-14 w-14 place-items-center rounded-full border-2 border-dashed border-primary text-primary">
+            <Plus size={22} />
           </span>
-          <span className="w-full truncate text-center text-[11px] font-semibold">My Story</span>
+          <span className="w-full truncate text-center text-[11px] font-medium text-primary">Add Story</span>
         </button>
         {STORIES.map((s) => {
           const active = activeId === s.id;
@@ -67,10 +59,10 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
           );
           return (
             <div key={s.id}>
-              <Link to="/story/$id" params={{ id: s.id }} className="flex w-20 shrink-0 flex-col items-center gap-1.5 lg:hidden">
+              <Link to="/story/$id" params={{ id: s.id }} className="flex w-20 shrink-0 flex-col items-center gap-1.5 md:hidden">
                 {inner}
               </Link>
-              <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} className="hidden lg:block">
+              <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} className="hidden md:block">
                 <Link to={storiesPath} search={{ story: s.id }} className="flex w-20 shrink-0 flex-col items-center gap-1.5"
                   style={active ? { filter: "drop-shadow(0 0 0 2px var(--primary))" } : undefined}>
                   {inner}
@@ -100,8 +92,8 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
           );
           return (
             <div key={s.id}>
-              <Link to="/story/$id" params={{ id: s.id }} className="lg:hidden">{card}</Link>
-              <Link to={storiesPath} search={{ story: s.id }} className="hidden lg:block">{card}</Link>
+              <Link to="/story/$id" params={{ id: s.id }} className="md:hidden">{card}</Link>
+              <Link to={storiesPath} search={{ story: s.id }} className="hidden md:block">{card}</Link>
             </div>
           );
         })}
@@ -114,28 +106,38 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
             onClick={() => setShowCommSearch((v) => !v)}
             className="grid h-9 w-9 place-items-center rounded-full border bg-card hover:bg-muted"
           >
-            <Search size={16} />
+            <Search size={15} />
           </button>
-          {showCommSearch && (
-            <div className="absolute right-11 top-11 z-10 w-64 rounded-2xl border bg-background p-2 shadow-card">
+          <button
+            onClick={() => setCreateComm(true)}
+            className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground hover:opacity-90"
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+      </div>
+      <AnimatePresence>
+        {showCommSearch && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="flex items-center gap-2 rounded-full border bg-card px-3 py-2 mt-3">
+              <Search size={14} className="text-muted-foreground" />
               <input
                 autoFocus
                 value={commSearch}
                 onChange={(e) => setCommSearch(e.target.value)}
                 placeholder="Search communities"
-                className="h-10 w-full rounded-full border bg-card px-3 text-sm outline-none"
+                className="h-8 flex-1 bg-transparent text-sm outline-none"
               />
             </div>
-          )}
-          <button onClick={() => setCreateComm(true)} className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground hover:opacity-90">
-            <Plus size={16} />
-          </button>
-        </div>
-      </div>
-      <div className="mt-3 grid gap-3">
-        {communities.length === 0 && (
-          <div className="rounded-3xl border bg-card p-6 text-center text-sm text-muted-foreground">No communities match "{commSearch}"</div>
+          </motion.div>
         )}
+      </AnimatePresence>
+      <div className="mt-3 grid gap-3">
         {communities.map((c) => (
           <motion.div key={c.id} whileHover={{ y: -2 }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-3xl border bg-card p-3 shadow-soft transition-shadow hover:shadow-card">
             <img src={c.cover} alt="" className="h-14 w-14 rounded-2xl object-cover" />
@@ -150,7 +152,7 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
       <div className="h-28" />
 
       {/* Mobile / tablet only — desktop uses the sidebar's contextual + button */}
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <Fab
           actions={[
             { label: "Text", icon: Type, onClick: () => setComposer("text") },
@@ -163,47 +165,41 @@ export function StoriesView({ activeId, base = "dashboard" }: { activeId?: strin
 
       <Modal open={composer !== null} onClose={() => setComposer(null)} title={`New ${composer ?? ""} Story`}>
         <div className="p-6">
-          <AnimatePresence mode="wait">
-            <motion.div key={composer ?? "none"} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-              {composer === "text" && (
-                <textarea autoFocus placeholder="What's on your mind?" className="h-40 w-full resize-none rounded-3xl bg-gradient-to-br from-primary to-purple-600 p-6 text-[20px] font-semibold text-white placeholder:text-white/70 outline-none" />
-              )}
-              {composer === "voice" && (
-                <div className="flex flex-col items-center gap-4 py-6">
-                  <motion.button whileTap={{ scale: 0.9 }} className="grid h-24 w-24 place-items-center rounded-full bg-primary text-white shadow-card"><Mic size={32} /></motion.button>
-                  <div className="text-sm text-muted-foreground">Tap to record · Up to 60s</div>
-                </div>
-              )}
-              {composer === "photo" && (
-                <div className="grid aspect-video place-items-center rounded-3xl border-2 border-dashed bg-muted/40 text-muted-foreground">
-                  <div className="flex flex-col items-center gap-2"><Camera size={26} /><span className="text-sm">Take a photo or upload</span></div>
-                </div>
-              )}
-              {composer === "video" && (
-                <div className="grid aspect-video place-items-center rounded-3xl border-2 border-dashed bg-muted/40 text-muted-foreground">
-                  <div className="flex flex-col items-center gap-2"><Video size={26} /><span className="text-sm">Record up to 60 seconds</span></div>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-          <button onClick={() => setComposer(null)} className="mt-5 w-full rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-soft">Share to Story</button>
-        </div>
-      </Modal>
-
-      <Modal open={createComm} onClose={() => setCreateComm(false)} title="Create Community"
-        footer={<div className="flex justify-end"><button onClick={() => setCreateComm(false)} className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground">Create</button></div>}>
-        <div className="space-y-4 p-4">
-          <div className="grid h-32 place-items-center rounded-3xl bg-gradient-to-br from-primary to-purple-600 text-white">
-            <Users size={28} />
-          </div>
-          <div>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Community name</label>
-            <input placeholder="Neighborhood Makers" className="mt-1.5 h-11 w-full rounded-2xl border bg-card px-3 text-sm outline-none focus:border-primary" />
-          </div>
-          <div>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Description</label>
-            <textarea placeholder="What's your community about?" className="mt-1.5 h-24 w-full resize-none rounded-2xl border bg-card p-3 text-sm outline-none focus:border-primary" />
-          </div>
+          {composer === "text" && (
+            <div>
+              <div className="text-sm font-semibold text-muted-foreground mb-2">Write something</div>
+              <textarea autoFocus placeholder="What's on your mind?" className="mt-1.5 h-24 w-full resize-none rounded-2xl border bg-card p-3 text-sm outline-none focus:border-primary" />
+            </div>
+          )}
+          {composer === "voice" && (
+            <div className="flex flex-col items-center gap-4 py-6">
+              <button className="grid h-20 w-20 place-items-center rounded-full bg-primary text-primary-foreground shadow-card">
+                <Mic size={32} />
+              </button>
+              <span className="text-sm text-muted-foreground">Tap to record</span>
+            </div>
+          )}
+          {composer === "photo" && (
+            <div className="flex flex-col items-center gap-4 py-6">
+              <button className="grid h-20 w-20 place-items-center rounded-full bg-primary text-primary-foreground shadow-card">
+                <Camera size={32} />
+              </button>
+              <span className="text-sm text-muted-foreground">Upload a photo</span>
+            </div>
+          )}
+          {composer === "video" && (
+            <div className="flex flex-col items-center gap-4 py-6">
+              <button className="grid h-20 w-20 place-items-center rounded-full bg-primary text-primary-foreground shadow-card">
+                <Video size={32} />
+              </button>
+              <span className="text-sm text-muted-foreground">Record a video</span>
+            </div>
+          )}
+          {composer && (
+            <button className="mt-4 w-full rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-soft">
+              Post Story
+            </button>
+          )}
         </div>
       </Modal>
     </div>
