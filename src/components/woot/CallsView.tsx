@@ -8,7 +8,7 @@ import { Fab } from "./Fab";
 import { Modal } from "./Modal";
 
 export function CallsView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
-  const [modal, setModal] = useState<null | "voice" | "video" | "search" | "recent">(null);
+  const [modal, setModal] = useState<null | "voice" | "video" | "search" | "recent">null);
   const [query, setQuery] = useState("");
   const results = BUSINESSES.filter((b) => b.name.toLowerCase().includes(query.toLowerCase())).slice(0, 10);
   const callsPath: "/dashboard/calls" | "/customer/calls" = base === "dashboard" ? "/dashboard/calls" : "/customer/calls";
@@ -44,15 +44,13 @@ export function CallsView({ activeId, base = "dashboard" }: { activeId?: string;
         );
         return (
           <motion.li key={c.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
-            {/* Mobile/tablet: full-screen active-call route */}
-            <Link to="/call/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:hidden">
+            <Link to="/call/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent md:hidden">
               {rowInner}
             </Link>
-            {/* Desktop: stays on the calls route, sets ?call= so the list never leaves the screen */}
             <Link
               to={callsPath}
               search={{ call: b.id }}
-              className="hidden grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:grid"
+              className="hidden md:grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent md:grid"
               style={active ? { background: "color-mix(in oklab, var(--primary) 10%, transparent)" } : undefined}
             >
               {rowInner}
