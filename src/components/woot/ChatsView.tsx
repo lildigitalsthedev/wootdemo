@@ -139,7 +139,7 @@ export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string;
               const chatsPath: "/dashboard/chats" | "/customer/chats" = base === "dashboard" ? "/dashboard/chats" : "/customer/chats";
               return (
                 <motion.li key={c.id} layout initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.02, duration: 0.2 }}>
-                  <Link to="/chat/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:hidden">
+                  <Link to="/chat/$id" params={{ id: b.id }} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent md:hidden">
                     <BusinessAvatar b={b} rounded="rounded-full" size={48} />
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
@@ -162,7 +162,7 @@ export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string;
                   <Link
                     to={chatsPath}
                     search={{ chat: b.id }}
-                    className="hidden grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent lg:grid"
+                    className="hidden md:grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60 active:bg-accent md:grid"
                     style={active ? { background: "color-mix(in oklab, var(--primary) 10%, transparent)" } : undefined}
                   >
                     <BusinessAvatar b={b} rounded="rounded-full" size={48} />
@@ -197,7 +197,7 @@ export function ChatsView({ activeId, base = "dashboard" }: { activeId?: string;
       )}
 
       {/* Mobile / tablet only — desktop uses the sidebar's + button */}
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <Fab
           actions={[
             { label: "New Chat", icon: MessageCircle, onClick: () => openModal("chat") },
