@@ -3,14 +3,14 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { z } from "zod";
 import { ArrowLeft, ArrowRight, Store, Users, Sparkles } from "lucide-react";
-import { WootLogo } from "@/components/woot/Logo";
+import { WootLogo as GlodeLogo } from "@/components/woot/Logo";
 
 const search = z.object({
   type: z.enum(["business", "affiliate", "customer"]).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/signup")({
-  head: () => ({ meta: [{ title: "Sign up — Woot" }, { name: "description", content: "Create your Woot account as a business, affiliate, or customer." }] }),
+  head: () => ({ meta: [{ title: "Sign up — Glode" }, { name: "description", content: "Create your Glode account as a business, affiliate, or customer." }] }),
   validateSearch: search,
   component: SignupPage,
 });
@@ -34,49 +34,89 @@ function SignupPage() {
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft size={16} /> Back
         </Link>
-        <WootLogo size={22} />
+        <GlodeLogo size={22} />
         <span className="text-sm text-muted-foreground">Step {selected ? 2 : 1} of 2</span>
       </header>
 
       <div className="mx-auto max-w-3xl px-5 pb-16 pt-6">
         <motion.h1 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-3xl font-black tracking-tight sm:text-5xl">
-          Join Woot.
+          Join Glode.
         </motion.h1>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="mt-2 text-muted-foreground">
-          Pick how you want to use Woot. You can change this later.
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="mt-3 max-w-lg text-muted-foreground">
+          Search, chat and buy from verified local businesses — or list your own store and start selling in minutes.
         </motion.p>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          {options.map((o) => {
-            const Icon = o.icon;
+          {options.map((o, i) => {
             const active = selected === o.k;
             return (
-              <button key={o.k} onClick={() => setSelected(o.k)}
-                className="rounded-3xl border bg-card p-5 text-left shadow-soft transition-all hover:-translate-y-0.5"
-                style={{ borderColor: active ? "var(--primary)" : undefined, boxShadow: active ? "0 12px 30px -12px color-mix(in oklab, var(--primary) 40%, transparent)" : undefined }}>
-                <span className="grid h-11 w-11 place-items-center rounded-2xl"
-                  style={{ background: active ? "var(--primary)" : "color-mix(in oklab, var(--primary) 10%, transparent)",
-                           color: active ? "white" : "var(--primary)" }}>
-                  <Icon size={20} />
+              <motion.button
+                key={o.k}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 + i * 0.05 }}
+                onClick={() => setSelected(o.k)}
+                className="group relative overflow-hidden rounded-3xl border bg-card p-5 text-left shadow-soft transition-transform hover:-translate-y-0.5"
+                style={{
+                  borderColor: active ? "var(--primary)" : undefined,
+                  boxShadow: active ? "0 0 0 3px color-mix(in oklab, var(--primary) 20%, transparent)" : undefined,
+                }}
+              >
+                <span className="grid h-11 w-11 place-items-center rounded-2xl" style={{ background: active ? "var(--primary)" : "var(--accent)", color: active ? "white" : "var(--foreground)" }}>
+                  <o.icon size={20} />
                 </span>
-                <div className="mt-4 text-lg font-semibold">{o.title}</div>
-                <div className="mt-1 text-sm text-muted-foreground">{o.d}</div>
-              </button>
+                <div className="mt-3 text-[15px] font-bold">{o.title}</div>
+                <div className="mt-1 text-[13px] text-muted-foreground">{o.d}</div>
+              </motion.button>
             );
           })}
         </div>
 
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence>
           {selected && (
             <motion.div
-              key={selected}
-              initial={{ opacity: 0, height: 0, y: -6 }}
-              animate={{ opacity: 1, height: "auto", y: 0 }}
-              exit={{ opacity: 0, height: 0, y: -6 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.28 }}
               className="overflow-hidden"
             >
-              <Form t={selected} onDone={() => navigate({ to: selected === "business" ? "/dashboard/chats" : "/customer/chats" })} />
+              <div className="mt-6 rounded-3xl border bg-card p-5 shadow-card">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {selected === "business" && (
+                    <>
+                      <Field label="Business name" placeholder="e.g. Brew & Bloom" />
+                      <Field label="Category" placeholder="Cafe, Shoes, Bakery…" />
+                      <Field label="Email" placeholder="hello@brewbloom.com" />
+                      <Field label="City" placeholder="Brooklyn, NY" />
+                    </>
+                  )}
+                  {selected === "affiliate" && (
+                    <>
+                      <Field label="Full name" placeholder="Alex Rivera" />
+                      <Field label="Instagram or TikTok" placeholder="@alex" />
+                      <Field label="Email" placeholder="alex@email.com" />
+                      <Field label="City" placeholder="Brooklyn, NY" />
+                    </>
+                  )}
+                  {selected === "customer" && (
+                    <>
+                      <Field label="Full name" placeholder="Sam O'Neill" />
+                      <Field label="City" placeholder="Brooklyn, NY" />
+                      <Field label="Email" placeholder="sam@email.com" />
+                    </>
+                  )}
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <p className="text-xs text-muted-foreground">By continuing you agree to the terms. Demo — no data stored.</p>
+                  <button
+                    onClick={() => navigate({ to: selected === "business" ? "/dashboard/chats" : "/customer/chats" })}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02]"
+                  >
+                    Continue <ArrowRight size={16} />
+                  </button>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -85,28 +125,11 @@ function SignupPage() {
   );
 }
 
-function Form({ t, onDone }: { t: T; onDone: () => void }) {
-  const fields = t === "business"
-    ? [{ n: "Business name", ph: "Brew & Bloom" }, { n: "Category", ph: "Cafe" }, { n: "Location", ph: "Portland, OR" }, { n: "Email", ph: "hello@brewbloom.com" }]
-    : t === "affiliate"
-      ? [{ n: "Full name", ph: "Alex Rivera" }, { n: "Handle", ph: "@alex" }, { n: "City", ph: "Los Angeles, CA" }, { n: "Email", ph: "alex@email.com" }]
-      : [{ n: "Full name", ph: "Sam O'Neill" }, { n: "City", ph: "Brooklyn, NY" }, { n: "Phone", ph: "(555) 010-2345" }, { n: "Email", ph: "sam@email.com" }];
+function Field({ label, placeholder }: { label: string; placeholder: string }) {
   return (
-    <div className="mt-6 rounded-3xl border bg-card p-6 shadow-card">
-      <div className="grid gap-3 sm:grid-cols-2">
-        {fields.map((f) => (
-          <label key={f.n} className="block">
-            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{f.n}</span>
-            <input placeholder={f.ph} className="h-11 w-full rounded-xl border bg-background px-3.5 text-sm outline-none transition-colors focus:border-primary" />
-          </label>
-        ))}
-      </div>
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-muted-foreground">Demo experience — no accounts created.</p>
-        <button onClick={onDone} className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02]">
-          Enter Woot <ArrowRight size={16} />
-        </button>
-      </div>
-    </div>
+    <label className="block">
+      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
+      <input placeholder={placeholder} className="h-11 w-full rounded-xl border bg-background px-3.5 text-sm outline-none transition-colors focus:border-primary" />
+    </label>
   );
 }
