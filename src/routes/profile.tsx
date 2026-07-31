@@ -144,7 +144,7 @@ function ProfilePage() {
 
       <button
         onClick={() => setPremiumOpen(true)}
-        className="relative mt-3 flex w-full items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-purple-600 p-4 text-left text-white shadow-lg shadow-primary/20"
+        className="relative mt-3 flex w-full items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-primary p-4 text-left text-white shadow-lg shadow-primary/20"
       >
         <div
           className="pointer-events-none absolute -right-6 -top-8 h-28 w-28 rounded-full bg-white/10 blur-2xl"
@@ -174,21 +174,21 @@ function ProfilePage() {
   );
 
   return (
-    <div className="flex min-h-[100dvh] w-full bg-surface lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pl-20">
+    <div className="flex min-h-[100dvh] w-full bg-surface md:h-[100dvh] md:min-h-0 md:overflow-hidden md:pl-[80px]">
       <Sidebar base={base} />
       {photoInput}
       <PremiumSheet open={premiumOpen} onClose={() => setPremiumOpen(false)} />
-      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col pb-28 md:max-w-none lg:min-h-0 lg:pb-0">
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col pb-28 md:max-w-none md:min-h-0 md:pb-0">
         <PageTransition>
-          <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:max-w-none lg:flex lg:h-[100dvh] lg:min-h-0 lg:max-w-none">
-            <div className="lg:hidden">
-              <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl md:px-6">
+          <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:max-w-none md:flex md:h-[100dvh] md:min-h-0 md:max-w-none">
+            <div className="md:hidden">
+              <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-3 py-3 backdrop-blur-xl">
                 <button onClick={() => nav({ to: `/${base}/chats` })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></button>
                 <h1 className="truncate text-[17px] font-bold">Profile</h1>
                 <Link to="/settings" search={{ from: base }} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><SettingsIcon size={18} /></Link>
               </header>
 
-              <div className="px-4 pt-8 md:mx-auto md:max-w-xl">
+              <div className="px-4 pt-8">
                 {identityCard(false)}
                 <div className="mt-8">{quickAccessContent}</div>
                 <div className="mt-8">{storefrontContent}</div>
@@ -196,8 +196,8 @@ function ProfilePage() {
               </div>
             </div>
 
-            <div className="hidden min-h-0 flex-1 lg:flex">
-              <aside className="flex w-80 shrink-0 flex-col gap-4 overflow-y-auto border-r bg-background p-4">
+            <div className="hidden min-h-0 flex-1 md:flex">
+              <aside className="flex w-72 shrink-0 flex-col gap-4 overflow-y-auto border-r bg-background p-4 md:w-80">
                 {identityCard(true)}
                 <nav className="flex flex-col gap-1">
                   {sections.map((s) => {
@@ -240,7 +240,7 @@ function ProfilePage() {
           </div>
         </PageTransition>
       </div>
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <BottomNav base={base} />
       </div>
     </div>
