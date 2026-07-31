@@ -8,7 +8,7 @@ import { Fab } from "./Fab";
 import { Modal } from "./Modal";
 
 export function CallsView({ activeId, base = "dashboard" }: { activeId?: string; base?: "dashboard" | "customer" } = {}) {
-  const [modal, setModal] = useState<null | "voice" | "video" | "search" | "recent">null);
+  const [modal, setModal] = useState<null | "voice" | "video" | "search" | "recent">(null);
   const [query, setQuery] = useState("");
   const results = BUSINESSES.filter((b) => b.name.toLowerCase().includes(query.toLowerCase())).slice(0, 10);
   const callsPath: "/dashboard/calls" | "/customer/calls" = base === "dashboard" ? "/dashboard/calls" : "/customer/calls";
