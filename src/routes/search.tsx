@@ -16,18 +16,13 @@ import { Sidebar } from "@/components/woot/Sidebar";
 const search = z.object({ q: z.string().optional().catch(undefined) });
 
 export const Route = createFileRoute("/search")({
-  head: () => ({ meta: [{ title: "Search — Woot" }, { name: "description", content: "Find verified businesses near you." }] }),
+  head: () => ({ meta: [{ title: "Search — Glode" }, { name: "description", content: "Find verified businesses near you." }] }),
   validateSearch: search,
   component: SearchPage,
 });
 
 type Scope = "nearby" | "country" | "global";
 
-/**
- * Cleaner, more modern "worldwide" glyph than lucide's default Globe icon —
- * simplified latitude/longitude grid on a circle, tuned to sit well at
- * small sizes next to the other scope icons.
- */
 function GlobalIcon({ size = 14 }: { size?: number }) {
   return (
     <svg
@@ -83,8 +78,6 @@ function SearchPage() {
   const { country } = useUserCountry();
 
   const results = useMemo(() => {
-    // "nearby" narrows to the closest businesses; "country" widens to
-    // everything within the user's detected country; "global" is unfiltered.
     const base =
       scope === "nearby" ? BUSINESSES.slice(0, 12) : scope === "country" ? BUSINESSES : BUSINESSES;
     if (!query.trim()) return base;
@@ -97,8 +90,6 @@ function SearchPage() {
     );
   }, [query, scope]);
 
-  // Keep the desktop detail pane pointed at a result that's actually visible;
-  // default to the first one whenever the list changes underneath it.
   useEffect(() => {
     if (!results.some((b) => b.id === selected)) {
       setSelected(results[0]?.id ?? null);
@@ -150,11 +141,11 @@ function SearchPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pl-20">
+      <div className="min-h-screen bg-background md:h-[100dvh] md:min-h-0 md:overflow-hidden md:pl-[80px]">
         <Sidebar base="customer" />
 
-        {/* Mobile / tablet: single stacked column, results expand in place */}
-        <div className="mx-auto max-w-3xl lg:hidden">
+        {/* Mobile: single stacked column, results expand in place */}
+        <div className="mx-auto max-w-3xl md:hidden">
           <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur-xl">
             <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 px-4 py-3">
               <button onClick={() => navigate({ to: "/" })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent">
@@ -187,9 +178,9 @@ function SearchPage() {
           </div>
         </div>
 
-        {/* Desktop / tablet master-detail: results list + selected business detail */}
-        <div className="hidden min-h-0 flex-1 lg:flex">
-          <aside className="flex w-80 shrink-0 flex-col border-r bg-background">
+        {/* Tablet / desktop master-detail: results list + selected business detail */}
+        <div className="hidden min-h-0 flex-1 md:flex">
+          <aside className="flex w-72 shrink-0 flex-col border-r bg-background md:w-80">
             <div className="border-b p-4">{searchHeader}</div>
             <div className="flex items-center justify-between px-4 pt-3">
               <p className="text-xs text-muted-foreground">
