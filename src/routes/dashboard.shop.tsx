@@ -25,14 +25,11 @@ type Tab = typeof tabs[number]["k"];
 type CreateKind = "product" | "category" | "collection" | "store";
 
 export const Route = createFileRoute("/dashboard/shop")({
-  head: () => ({ meta: [{ title: "Shop — Woot Business" }] }),
+  head: () => ({ meta: [{ title: "Shop — Glode Business" }] }),
   component: ShopEditor,
 });
 
 function ShopEditor() {
-  // Business owners land on the same Global Marketplace as everyone else.
-  // "manage" is an opt-in view they reach via the header toggle, for
-  // running their own store rather than buying from others.
   const [view, setView] = useState<ShopView>("market");
   const [tab, setTab] = useState<Tab>("products");
   const [createModal, setCreateModal] = useState<null | CreateKind>(null);
@@ -42,9 +39,6 @@ function ShopEditor() {
   const activeTab = tabs.find((t) => t.k === tab)!;
   const isManaging = view === "manage";
 
-  // The header "New" button and the mobile FAB both open the modal that
-  // matches whatever tab is currently active, so "New" always means
-  // "new thing for what I'm looking at right now".
   const newForTab: Record<Tab, CreateKind> = {
     products: "product",
     store: "store",
@@ -86,8 +80,8 @@ function ShopEditor() {
         </PageTransition>
       ) : (
         <PageTransition>
-          {/* Mobile / tablet layout — unchanged experience */}
-          <div className="lg:hidden">
+          {/* Mobile layout */}
+          <div className="md:hidden">
             <StoreCard me={me} />
             <div className="no-scrollbar sticky top-[64px] z-10 mt-4 flex gap-2 overflow-x-auto border-b bg-background/90 px-4 py-2 backdrop-blur-xl">
               {tabs.map((t) => {
@@ -114,9 +108,9 @@ function ShopEditor() {
             </div>
           </div>
 
-          {/* Desktop master-detail: narrow shop nav + wide content panel */}
-          <div className="hidden min-h-0 flex-1 lg:flex">
-            <aside className="flex w-60 shrink-0 flex-col gap-3 overflow-y-auto border-r bg-background p-3">
+          {/* Tablet / desktop master-detail: narrow shop nav + wide content panel */}
+          <div className="hidden min-h-0 flex-1 md:flex">
+            <aside className="flex w-56 shrink-0 flex-col gap-3 overflow-y-auto border-r bg-background p-3 md:w-60">
               <StoreCard me={me} compact />
               <nav className="flex flex-col gap-1">
                 {tabs.map((t) => {
@@ -159,12 +153,8 @@ function ShopEditor() {
         </PageTransition>
       )}
 
-      {/* Mobile / tablet only — desktop uses the header's + New button.
-          Actions cover everything a business owner can add to their shop:
-          new product, new category, new catalog collection, and store
-          details, mirroring how Chats/Calls/Stories expose their FAB. */}
       {isManaging && (
-        <div className="lg:hidden">
+        <div className="md:hidden">
           <Fab
             actions={[
               { label: "New Product", icon: Package, onClick: () => setCreateModal("product") },
@@ -386,11 +376,6 @@ function CategoriesTab({ onCreate }: { onCreate: (k: CreateKind) => void }) {
   );
 }
 
-/**
- * The four "create" flows a business owner reaches from either the header
- * "+ New" button or the mobile FAB. Kept intentionally simple (mock forms,
- * no real persistence) to match the rest of this demo's editable surfaces.
- */
 function CreateModals({ kind, onClose, me }: { kind: CreateKind | null; onClose: () => void; me: typeof BUSINESSES[number] }) {
   return (
     <>
