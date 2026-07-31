@@ -12,7 +12,7 @@ import { applyTheme, getStoredTheme, type Theme } from "@/lib/theme";
 const search = z.object({ from: z.enum(["dashboard", "customer"]).optional().catch(undefined) });
 
 export const Route = createFileRoute("/settings")({
-  head: () => ({ meta: [{ title: "Settings — Woot" }] }),
+  head: () => ({ meta: [{ title: "Settings — Glode" }] }),
   validateSearch: search,
   component: SettingsPage,
 });
@@ -39,7 +39,7 @@ const groups: { title: string; items: Item[] }[] = [
   ]},
   { title: "About", items: [
     { icon: HelpCircle, label: "Help", k: "help" },
-    { icon: Info, label: "About Woot", k: "about" },
+    { icon: Info, label: "About Glode", k: "about" },
     { icon: UserPlus, label: "Invite Friends", k: "invite" },
   ]},
 ];
@@ -97,9 +97,6 @@ function ThemePicker({ theme, onChange }: { theme: Theme; onChange: (t: Theme) =
   );
 }
 
-/** Right-pane detail content for whichever settings item is selected. Kept
- * intentionally light (mock controls, no persistence) to match the rest of
- * this demo's editable surfaces. */
 function SettingDetail({ k, base, me, theme, onThemeChange }: { k: string; base: "dashboard" | "customer"; me: ReturnType<typeof useMe>; theme: Theme; onThemeChange: (t: Theme) => void }) {
   switch (k) {
     case "profile":
@@ -125,7 +122,7 @@ function SettingDetail({ k, base, me, theme, onThemeChange }: { k: string; base:
             <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Username</span>
             <input defaultValue={ME.handle} className="h-11 w-full rounded-xl border bg-background px-3.5 text-sm outline-none focus:border-primary" />
           </label>
-          <p className="text-[12px] text-muted-foreground">Your username is how people find and mention you across Woot.</p>
+          <p className="text-[12px] text-muted-foreground">Your username is how people find and mention you across Glode.</p>
         </div>
       );
     case "dm-link":
@@ -224,13 +221,13 @@ function SettingDetail({ k, base, me, theme, onThemeChange }: { k: string; base:
         </div>
       );
     case "help":
-      return <p className="max-w-md text-[13px] text-muted-foreground">Browse Woot's help center or reach out to support for anything you're stuck on.</p>;
+      return <p className="max-w-md text-[13px] text-muted-foreground">Browse Glode's help center or reach out to support for anything you're stuck on.</p>;
     case "about":
-      return <p className="max-w-md text-[13px] text-muted-foreground">Woot v1.0.0 — messaging and commerce, together. Terms and privacy policy links live here.</p>;
+      return <p className="max-w-md text-[13px] text-muted-foreground">Glode v1.0.0 — messaging and commerce, together. Terms and privacy policy links live here.</p>;
     case "invite":
       return (
         <div className="max-w-sm space-y-3">
-          <p className="text-[13px] text-muted-foreground">Invite friends to Woot and share your favorite shops with them.</p>
+          <p className="text-[13px] text-muted-foreground">Invite friends to Glode and share your favorite shops with them.</p>
           <button className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-soft">Share invite link</button>
         </div>
       );
@@ -254,13 +251,13 @@ function SettingsPage() {
   const selectedItem = allItems.find((it) => it.k === selected) ?? allItems[0];
 
   return (
-    <div className="flex min-h-[100dvh] w-full bg-surface lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pl-20">
+    <div className="flex min-h-[100dvh] w-full bg-surface md:h-[100dvh] md:min-h-0 md:overflow-hidden md:pl-[80px]">
       <Sidebar base={base} />
       <PageTransition>
-        <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:max-w-none lg:flex lg:h-[100dvh] lg:min-h-0 lg:max-w-none">
-          {/* Mobile / tablet: single stacked list, unchanged experience */}
-          <div className="lg:hidden">
-            <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl md:px-6">
+        <div className="mx-auto min-h-[100dvh] w-full max-w-3xl bg-surface md:max-w-none md:flex md:h-[100dvh] md:min-h-0">
+          {/* Mobile: single stacked list */}
+          <div className="md:hidden">
+            <header className="sticky top-0 z-20 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b bg-background/85 px-4 py-3 backdrop-blur-xl">
               <button onClick={() => nav({ to: "/profile", search: { from: base } })} className="grid h-10 w-10 place-items-center rounded-full hover:bg-accent"><ArrowLeft size={18} /></button>
               <h1 className="text-center text-[17px] font-bold">Settings</h1>
               <div className="h-10 w-10" />
@@ -323,13 +320,13 @@ function SettingsPage() {
               ))}
 
               <button className="mt-6 w-full rounded-full border border-destructive/40 bg-background py-3 text-sm font-semibold text-destructive hover:bg-destructive/5">Log out</button>
-              <div className="mt-4 pb-10 text-center text-[11px] text-muted-foreground">Woot · v1.0.0</div>
+              <div className="mt-4 pb-10 text-center text-[11px] text-muted-foreground">Glode · v1.0.0</div>
             </div>
           </div>
 
-          {/* Desktop / tablet master-detail: settings menu + detail panel */}
-          <div className="hidden min-h-0 flex-1 lg:flex">
-            <aside className="flex w-72 shrink-0 flex-col gap-1 overflow-y-auto border-r bg-background p-3">
+          {/* Tablet / desktop master-detail: settings menu + detail panel */}
+          <div className="hidden min-h-0 flex-1 md:flex">
+            <aside className="flex w-64 shrink-0 flex-col gap-1 overflow-y-auto border-r bg-background p-3 md:w-72">
               <div className="px-2 pb-2 pt-1 text-[17px] font-bold">Settings</div>
               <Link to="/profile" search={{ from: base }} className="mb-2 flex items-center gap-3 rounded-2xl border bg-card p-3 shadow-soft hover:bg-accent/40">
                 <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full text-[13px] font-black text-white" style={{ background: me.avatarUrl ? undefined : me.color }}>
@@ -367,7 +364,7 @@ function SettingsPage() {
                 </div>
               ))}
               <button className="mx-2 mt-1 rounded-full border border-destructive/40 bg-background py-2.5 text-[13px] font-semibold text-destructive hover:bg-destructive/5">Log out</button>
-              <div className="px-2 pb-2 pt-3 text-[11px] text-muted-foreground">Woot · v1.0.0</div>
+              <div className="px-2 pb-2 pt-3 text-[11px] text-muted-foreground">Glode · v1.0.0</div>
             </aside>
             <section className="min-w-0 flex-1 overflow-y-auto">
               <div className="sticky top-0 z-10 flex items-center gap-2 border-b bg-background px-6 py-4">
