@@ -53,25 +53,27 @@ const SECTION_ACTIONS: Record<Section, { label: string; event: string; actions: 
     label: "New Call",
     event: "woot:new-call",
     actions: [
-      { kind: "voice", label: "Voice Call", icon: PhoneCall },
+      { kind: "audio", label: "Audio Call", icon: PhoneCall },
       { kind: "video", label: "Video Call", icon: Video, tint: "#7c3aed" },
-      { kind: "group", label: "Group Call", icon: Users2, tint: "#f97316" },
+      { kind: "outgoing", label: "Outgoing", icon: PhoneOutgoing, tint: "#f97316" },
+      { kind: "group", label: "Group Call", icon: Users2, tint: "#15803d" },
     ],
   },
   shop: {
     label: "New Product",
-    event: "woot:new-shop",
+    event: "woot:new-product",
     actions: [
       { kind: "product", label: "New Product", icon: Package },
-      { kind: "order", label: "New Order", icon: PhoneOutgoing, tint: "#7c3aed" },
+      { kind: "category", label: "New Category", icon: Store, tint: "#7c3aed" },
+      { kind: "collection", label: "Collection", icon: ListPlus, tint: "#f97316" },
     ],
   },
 };
 
-function sectionFromPath(pathname: string, base: "dashboard" | "customer"): Section {
-  if (pathname.startsWith(`/${base}/stories`)) return "stories";
-  if (pathname.startsWith(`/${base}/calls`)) return "calls";
-  if (pathname.startsWith(`/${base}/shop`)) return "shop";
+function sectionFromPath(path: string): Section {
+  if (path.includes("/stories")) return "stories";
+  if (path.includes("/calls")) return "calls";
+  if (path.includes("/shop")) return "shop";
   return "chats";
 }
 
@@ -81,20 +83,22 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
   const [expanded, setExpanded] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
-  const items = NAV_ITEMS(base);
 
-  const section = useMemo(() => sectionFromPath(pathname, base), [pathname, base]);
+  const section = sectionFromPath(pathname);
   const cfg = SECTION_ACTIONS[section];
+  const items = useMemo(() => NAV_ITEMS(base), [base]);
 
-  const isActive = (to: string) => pathname === to || pathname.startsWith(to + "/");
+  const isActive = (to: string) => pathname.startsWith(to);
 
   useEffect(() => {
     if (!addOpen) return;
-    const onDoc = (e: MouseEvent) => {
-      if (!popoverRef.current?.contains(e.target as Node)) setAddOpen(false);
+    const handler = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setAddOpen(false);
+      }
     };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, [addOpen]);
 
   const triggerAction = (kind: string) => {
@@ -117,7 +121,7 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
       initial={false}
       animate={{ width: expanded ? 232 : SIDEBAR_COLLAPSED_WIDTH }}
       transition={{ type: "spring", stiffness: 420, damping: 38 }}
-      className="fixed inset-y-0 left-0 z-40 hidden flex-col overflow-visible border-r bg-background py-5 lg:flex"
+      className="fixed inset-y-0 left-0 z-40 hidden flex-col overflow-visible border-r bg-background py-5 md:flex"
       style={{ borderColor: "color-mix(in oklab, var(--foreground) 8%, transparent)" }}
     >
       <div className="flex items-center px-[15px] pb-6">
@@ -135,7 +139,9 @@ export function Sidebar({ base }: { base: "dashboard" | "customer" }) {
             }}
           >
             <svg width={16} height={16} viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path d="M3 6l3 12 3-8 3 8 3-12 3 12 3-8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="12" r="3.5" fill="currentColor" />
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="currentColor" strokeWidth="2" fill="none" />
+              <path d="M2 12h4M18 12h4M12 2v4M12 18v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </span>
         )}

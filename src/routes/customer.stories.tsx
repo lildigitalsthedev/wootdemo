@@ -9,7 +9,7 @@ import { Sparkles } from "lucide-react";
 const search = z.object({ story: z.string().optional().catch(undefined) });
 
 export const Route = createFileRoute("/customer/stories")({
-  head: () => ({ meta: [{ title: "Stories — Woot" }] }),
+  head: () => ({ meta: [{ title: "Stories — Glode" }] }),
   validateSearch: search,
   component: StoriesRoute,
 });
@@ -20,14 +20,11 @@ function StoriesRoute() {
 
   return (
     <AppShell title="Stories" base="customer" noPadX>
-      {/* Mobile / tablet: list only, tapping a story opens the full-screen /story/$id overlay */}
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <PageTransition><StoriesView base="customer" /></PageTransition>
       </div>
-
-      {/* Desktop: list + viewer side by side, list never leaves the screen */}
-      <div className="hidden min-h-0 flex-1 lg:flex">
-        <div className="relative w-[380px] shrink-0 overflow-y-auto border-r">
+      <div className="hidden min-h-0 flex-1 md:flex">
+        <div className="relative w-[340px] shrink-0 overflow-y-auto border-r">
           <StoriesView activeId={activeStory?.id} base="customer" />
         </div>
         <div className="min-w-0 flex-1 bg-black">

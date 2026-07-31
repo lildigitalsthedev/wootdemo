@@ -10,7 +10,7 @@ import { MessageCircle } from "lucide-react";
 const search = z.object({ chat: z.string().optional().catch(undefined) });
 
 export const Route = createFileRoute("/dashboard/chats")({
-  head: () => ({ meta: [{ title: "Chats — Woot" }] }),
+  head: () => ({ meta: [{ title: "Chats — Glode" }] }),
   validateSearch: search,
   component: ChatsRoute,
 });
@@ -21,14 +21,11 @@ function ChatsRoute() {
 
   return (
     <AppShell title="Chats" base="dashboard" noPadX>
-      {/* Mobile / tablet: list only, tapping a chat navigates full-screen to /chat/$id */}
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <PageTransition><ChatsView base="dashboard" /></PageTransition>
       </div>
-
-      {/* Desktop: list + thread side by side, list never leaves the screen */}
-      <div className="hidden min-h-0 flex-1 lg:flex">
-        <div className="relative w-[380px] shrink-0 overflow-y-auto border-r">
+      <div className="hidden min-h-0 flex-1 md:flex">
+        <div className="relative w-[340px] shrink-0 overflow-y-auto border-r">
           <ChatsView activeId={activeBusiness?.id} base="dashboard" />
         </div>
         <div className="min-w-0 flex-1">

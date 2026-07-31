@@ -10,7 +10,7 @@ import { Phone } from "lucide-react";
 const search = z.object({ call: z.string().optional().catch(undefined) });
 
 export const Route = createFileRoute("/dashboard/calls")({
-  head: () => ({ meta: [{ title: "Calls — Woot" }] }),
+  head: () => ({ meta: [{ title: "Calls — Glode" }] }),
   validateSearch: search,
   component: CallsRoute,
 });
@@ -21,14 +21,11 @@ function CallsRoute() {
 
   return (
     <AppShell title="Calls" base="dashboard" noPadX>
-      {/* Mobile / tablet: list only, tapping a call navigates full-screen to /call/$id */}
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <PageTransition><CallsView base="dashboard" /></PageTransition>
       </div>
-
-      {/* Desktop: list + call detail side by side, list never leaves the screen */}
-      <div className="hidden min-h-0 flex-1 lg:flex">
-        <div className="relative w-[380px] shrink-0 overflow-y-auto border-r">
+      <div className="hidden min-h-0 flex-1 md:flex">
+        <div className="relative w-[340px] shrink-0 overflow-y-auto border-r">
           <CallsView activeId={activeBusiness?.id} base="dashboard" />
         </div>
         <div className="min-w-0 flex-1">
