@@ -3,14 +3,14 @@ import { BottomNav } from "@/components/woot/BottomNav";
 import { Sidebar } from "@/components/woot/Sidebar";
 
 export const Route = createFileRoute("/customer")({
-  head: () => ({ meta: [{ title: "Woot" }] }),
+  head: () => ({ meta: [{ title: "Glode" }] }),
   component: () => (
-    <div className="flex min-h-[100dvh] w-full bg-surface lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pl-20">
+    <div className="flex min-h-[100dvh] w-full bg-surface md:h-[100dvh] md:min-h-0 md:overflow-hidden md:pl-[80px]">
       <Sidebar base="customer" />
-      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col pb-28 md:max-w-none lg:min-h-0 lg:pb-0">
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col pb-28 md:max-w-none md:min-h-0 md:pb-0">
         <Outlet />
       </div>
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <BottomNav base="customer" />
       </div>
     </div>
