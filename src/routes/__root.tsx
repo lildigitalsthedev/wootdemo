@@ -77,16 +77,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Glode — Search. Find. Chat. Buy." },
-      { name: "description", content: "Glode is the fastest way to search, find, chat and buy from verified local businesses." },
+      { title: "Glode — Search. Chat. Buy." },
+      { name: "description", content: "Glode is the fastest way to search, chat and buy from verified local businesses." },
       { name: "author", content: "Glode" },
-      { property: "og:title", content: "Glode — Search. Find. Chat. Buy." },
-      { property: "og:description", content: "Glode is the fastest way to search, find, chat and buy from verified local businesses." },
+      { property: "og:title", content: "Glode — Search. Chat. Buy." },
+      { property: "og:description", content: "Glode is the fastest way to search, chat and buy from verified local businesses." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@glodeapp" },
-      { name: "twitter:title", content: "Glode — Search. Find. Chat. Buy." },
-      { name: "twitter:description", content: "Glode is the fastest way to search, find, chat and buy from verified local businesses." },
+      { name: "twitter:title", content: "Glode — Search. Chat. Buy." },
+      { name: "twitter:description", content: "Glode is the fastest way to search, chat and buy from verified local businesses." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5fbe0bc4-6c88-4aa4-85a2-32bf82766084" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5fbe0bc4-6c88-4aa4-85a2-32bf82766084" },
     ],
@@ -124,14 +124,13 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => {
     try {
-      const t = (localStorage.getItem("woot-theme") as "light" | "dark" | "system" | null) || "system";
+      const t = (localStorage.getItem("glode-theme") as "light" | "dark" | "system" | null) || "system";
       const dark = t === "dark" || (t === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
       document.documentElement.classList.toggle("dark", dark);
     } catch {}
   }, []);
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
   );

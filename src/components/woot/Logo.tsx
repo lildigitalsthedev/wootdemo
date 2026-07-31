@@ -17,7 +17,9 @@ export function WootLogo({ size = 28, mono = false }: { size?: number; mono?: bo
         }}
       >
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path d="M3 6l3 12 3-8 3 8 3-12 3 12 3-8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="3.5" fill="currentColor" />
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="currentColor" strokeWidth="2" fill="none" />
+          <path d="M2 12h4M18 12h4M12 2v4M12 18v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
       </motion.div>
       <span className="text-[22px] font-black tracking-tight">Glode<span style={{ color: "var(--primary)" }}>.</span></span>
@@ -35,7 +37,7 @@ export function VerifiedBadge({ className = "" }: { className?: string }) {
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path
           d="M12 1.5l2.09 1.79 2.74-.32 1.13 2.51 2.51 1.13-.32 2.74L22 12l-1.85 2.09.32 2.74-2.51 1.13-1.13 2.51-2.74-.32L12 22.5l-2.09-1.79-2.74.32-1.13-2.51L3.53 17.4l.32-2.74L2 12l1.85-2.09-.32-2.74L6.04 6.04l1.13-2.51 2.74.32L12 1.5z"
-          fill="#2F6BFF"
+          fill="var(--primary)"
         />
         <path
           d="M8 12.2l2.6 2.6L16 9.4"
