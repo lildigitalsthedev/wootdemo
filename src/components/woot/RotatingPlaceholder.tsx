@@ -1,14 +1,24 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 
-export function RotatingPlaceholder({ items, interval = 2200, prefix = "" }: { items: string[]; interval?: number; prefix?: string }) {
+export function RotatingPlaceholder({
+  items,
+  interval = 2200,
+  prefix = "",
+  className = "text-muted-foreground",
+}: {
+  items: string[];
+  interval?: number;
+  prefix?: string;
+  className?: string;
+}) {
   const [i, setI] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setI((v) => (v + 1) % items.length), interval);
     return () => clearInterval(t);
   }, [items.length, interval]);
   return (
-    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center overflow-hidden text-muted-foreground">
+    <span className={`pointer-events-none absolute inset-y-0 left-0 flex items-center overflow-hidden ${className}`}>
       {prefix}
       <AnimatePresence mode="wait" initial={false}>
         <motion.span

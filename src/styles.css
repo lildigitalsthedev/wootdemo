@@ -47,89 +47,114 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-surface: var(--surface);
   --color-success: var(--success);
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* Glode brand accents, exposed as first-class Tailwind color utilities
+     (bg-lime, text-lime, border-electric, bg-rangoon, bg-prussian, text-ivory, text-slate…) */
+  --color-lime: var(--lime);
+  --color-lime-foreground: var(--lime-foreground);
+  --color-electric: var(--electric-blue);
+  --color-rangoon: var(--rangoon-green);
+  --color-prussian: var(--prussian-blue);
+  --color-ivory: var(--ivory);
+  --color-slate: var(--slate-grey);
+  --font-sans: "Work Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 1rem;
-  /* Glode brand — orange-red primary from Glogo (#ff3e00) */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.12 0.015 30);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.12 0.015 30);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.12 0.015 30);
-  /* #ff3e00 in oklch */
-  --primary: oklch(0.63 0.27 29);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.975 0.008 30);
-  --secondary-foreground: oklch(0.2 0.02 30);
-  --muted: oklch(0.97 0.005 30);
-  --muted-foreground: oklch(0.52 0.025 30);
-  --accent: oklch(0.96 0.015 30);
-  --accent-foreground: oklch(0.35 0.12 29);
-  --destructive: oklch(0.65 0.2 25);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.93 0.007 30);
-  --input: oklch(0.93 0.007 30);
-  --ring: oklch(0.63 0.27 29);
-  --surface: oklch(0.985 0.005 30);
-  --success: oklch(0.7 0.17 155);
-  --shadow-soft: 0 4px 20px -6px rgb(15 23 42 / 0.08);
-  --shadow-card: 0 8px 30px -12px rgb(15 23 42 / 0.12);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.63 0.27 29);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.63 0.27 29);
+  --radius: 1.25rem;
+  /* Glode brand — Electric Royal Blue primary, Light Lime Green CTA accent */
+  --background: #ffffff;
+  --foreground: #081c15;
+  --card: #ffffff;
+  --card-foreground: #081c15;
+  --popover: #ffffff;
+  --popover-foreground: #081c15;
+  --primary: #2b5ffb;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f4e6;
+  --secondary-foreground: #081c15;
+  --muted: #f1f2ef;
+  --muted-foreground: #626f7a;
+  --accent: #eaf0ff;
+  --accent-foreground: #1a3fc4;
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+  --border: #e6e8e3;
+  --input: #e6e8e3;
+  --ring: #2b5ffb;
+  --surface: #f7f8f4;
+  --success: #22c55e;
+  --shadow-soft: 0 4px 20px -6px rgb(8 28 21 / 0.08);
+  --shadow-card: 0 8px 30px -12px rgb(8 28 21 / 0.12);
+  --chart-1: #2b5ffb;
+  --chart-2: #cefd57;
+  --chart-3: #082656;
+  --chart-4: #94a3b8;
+  --chart-5: #22c55e;
+  --sidebar: #fbfbf8;
+  --sidebar-foreground: #081c15;
+  --sidebar-primary: #2b5ffb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaf0ff;
+  --sidebar-accent-foreground: #1a3fc4;
+  --sidebar-border: #e6e8e3;
+  --sidebar-ring: #2b5ffb;
+
+  /* Raw brand tokens (see GLODE brand blueprint) */
+  --lime: #cefd57;
+  --lime-foreground: #081c15;
+  --electric-blue: #2b5ffb;
+  --prussian-blue: #082656;
+  --rangoon-green: #081c15;
+  --ivory: #f1f4e6;
+  --slate-grey: #94a3b8;
 }
 
 .dark {
-  --background: oklch(0.12 0.015 30);
-  --foreground: oklch(0.97 0.005 30);
-  --card: oklch(0.17 0.02 30);
-  --card-foreground: oklch(0.97 0.005 30);
-  --popover: oklch(0.17 0.02 30);
-  --popover-foreground: oklch(0.97 0.005 30);
-  --primary: oklch(0.68 0.25 29);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.22 0.025 30);
-  --secondary-foreground: oklch(0.97 0.005 30);
-  --muted: oklch(0.22 0.02 30);
-  --muted-foreground: oklch(0.68 0.03 30);
-  --accent: oklch(0.25 0.04 29);
-  --accent-foreground: oklch(0.97 0.005 30);
-  --destructive: oklch(0.65 0.2 25);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.68 0.25 29);
-  --surface: oklch(0.10 0.015 30);
-  --success: oklch(0.72 0.17 155);
+  --background: #081c15;
+  --foreground: #f1f4e6;
+  --card: #0e2a3a;
+  --card-foreground: #f1f4e6;
+  --popover: #0e2a3a;
+  --popover-foreground: #f1f4e6;
+  --primary: #2b5ffb;
+  --primary-foreground: #ffffff;
+  --secondary: #10263a;
+  --secondary-foreground: #f1f4e6;
+  --muted: #102030;
+  --muted-foreground: #94a3b8;
+  --accent: #14304a;
+  --accent-foreground: #cefd57;
+  --destructive: #ff6b6b;
+  --destructive-foreground: #081c15;
+  --border: color-mix(in oklab, #f1f4e6 12%, transparent);
+  --input: color-mix(in oklab, #f1f4e6 16%, transparent);
+  --ring: #2b5ffb;
+  --surface: #0a2018;
+  --success: #22c55e;
   --shadow-soft: 0 4px 20px -6px rgb(0 0 0 / 0.5);
   --shadow-card: 0 8px 30px -12px rgb(0 0 0 / 0.6);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.17 0.02 30);
-  --sidebar-foreground: oklch(0.97 0.005 30);
-  --sidebar-primary: oklch(0.68 0.25 29);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.22 0.025 30);
-  --sidebar-accent-foreground: oklch(0.97 0.005 30);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.68 0.25 29);
+  --chart-1: #2b5ffb;
+  --chart-2: #cefd57;
+  --chart-3: #94a3b8;
+  --chart-4: #082656;
+  --chart-5: #22c55e;
+  --sidebar: #0e2a3a;
+  --sidebar-foreground: #f1f4e6;
+  --sidebar-primary: #2b5ffb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #14304a;
+  --sidebar-accent-foreground: #cefd57;
+  --sidebar-border: color-mix(in oklab, #f1f4e6 12%, transparent);
+  --sidebar-ring: #2b5ffb;
+
+  --lime: #cefd57;
+  --lime-foreground: #081c15;
+  --electric-blue: #2b5ffb;
+  --prussian-blue: #082656;
+  --rangoon-green: #081c15;
+  --ivory: #f1f4e6;
+  --slate-grey: #94a3b8;
 }
 
 @layer base {
@@ -151,6 +176,11 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
 
@@ -178,4 +208,95 @@
 }
 @keyframes shimmer-sweep {
   100% { transform: translateX(100%); }
+}
+
+/* ---------------------------------------------------------------------
+   GLODE brand utilities — ambient glow hero, glass bento cards, animated
+   border-beam, lime CTA button, kicker pill. See UI/UX redesign blueprint.
+--------------------------------------------------------------------- */
+
+@utility glode-hero {
+  position: relative;
+  background-color: var(--rangoon-green);
+  background-image:
+    radial-gradient(60rem 32rem at 50% -10%, color-mix(in oklab, var(--electric-blue) 30%, transparent), transparent 70%),
+    radial-gradient(40rem 24rem at 85% 10%, color-mix(in oklab, var(--lime) 10%, transparent), transparent 70%);
+  color: var(--ivory);
+}
+
+@utility glass-panel {
+  background: color-mix(in oklab, var(--prussian-blue) 55%, transparent);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid color-mix(in oklab, var(--electric-blue) 25%, transparent);
+}
+
+@utility bento-card {
+  position: relative;
+  border-radius: var(--radius-3xl);
+  background: linear-gradient(160deg, color-mix(in oklab, var(--prussian-blue) 65%, transparent), #0a1f2c 85%);
+  border: 1px solid color-mix(in oklab, var(--ivory) 10%, transparent);
+  overflow: hidden;
+  transition: transform 0.35s ease, border-color 0.35s ease;
+  &:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--electric-blue) 55%, transparent);
+  }
+}
+
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@utility beam-border {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--beam-angle), transparent 0 72%, var(--lime) 84%, var(--electric-blue) 92%, transparent 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beam-rotate 5s linear infinite;
+    pointer-events: none;
+  }
+}
+@keyframes beam-rotate {
+  to { --beam-angle: 360deg; }
+}
+
+@utility btn-lime {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: var(--lime);
+  color: var(--lime-foreground);
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-radius: 999px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--lime) 70%, transparent);
+  &:hover {
+    transform: translateY(-1px) scale(1.015);
+  }
+}
+
+@utility kicker-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lime);
+  background: color-mix(in oklab, var(--lime) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--lime) 30%, transparent);
 }

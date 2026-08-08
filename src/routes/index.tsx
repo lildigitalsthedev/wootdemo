@@ -99,38 +99,32 @@ function Index() {
             <a href="#features" className="hidden rounded-full px-3 py-2 text-muted-foreground hover:bg-accent sm:inline">Features</a>
             <a href="#faq" className="hidden rounded-full px-3 py-2 text-muted-foreground hover:bg-accent sm:inline">FAQ</a>
             <Link to="/search" className="rounded-full border bg-background px-3.5 py-2 text-sm font-medium hover:bg-accent">Explore</Link>
-            <Link to="/signup" search={{ type: "customer" }} className="rounded-full bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground shadow-soft">Get started</Link>
+            <Link to="/signup" search={{ type: "customer" }} className="btn-lime px-3.5 py-2 text-sm">Get started</Link>
           </nav>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div
-            className="absolute left-1/2 top-[-10rem] h-[36rem] w-[36rem] -translate-x-1/2 rounded-full opacity-30 blur-3xl"
-            style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 55%, transparent), transparent)" }}
-          />
-        </div>
-        <div className="mx-auto max-w-6xl px-5 pb-16 pt-14 sm:pt-24">
+      {/* Hero — ambient mesh glow on Rangoon Green canvas */}
+      <section className="glode-hero relative overflow-hidden">
+        <div className="mx-auto max-w-6xl px-5 pb-20 pt-14 sm:pt-24">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="mx-auto max-w-3xl text-center"
           >
-            <span className="inline-flex items-center gap-2 rounded-full border bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground shadow-soft backdrop-blur">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+            <span className="kicker-pill">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime" />
               Now live in 24 cities
             </span>
-            <h1 className="mt-5 text-[44px] font-black leading-[1.02] tracking-tight sm:text-[76px]">
-              Search. <span style={{ color: "var(--primary)" }}>Chat.</span> Buy.
+            <h1 className="mt-5 font-display text-[44px] font-black leading-[1.02] tracking-tight text-ivory sm:text-[76px]">
+              Search. <span className="text-electric">Chat.</span> Buy.
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground sm:text-[17px]">
-              Glode is the fastest way to discover verified local businesses, message them instantly, and buy in a tap.
+            <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-ivory/60 sm:text-[17px]">
+              Glode is the fastest way to discover verified local businesses, message them instantly, and buy in a tap — no algorithm required.
             </p>
 
-            {/* Integrated Search */}
+            {/* Integrated Search — dual-mode discovery pill bar */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -141,18 +135,18 @@ function Index() {
               <motion.div
                 animate={{
                   boxShadow: focused
-                    ? "0 0 0 3px color-mix(in oklab, var(--primary) 25%, transparent), 0 12px 40px -8px color-mix(in oklab, var(--primary) 20%, transparent)"
-                    : "0 8px 30px -12px rgb(15 23 42 / 0.12)",
+                    ? "0 0 0 3px color-mix(in oklab, var(--electric-blue) 35%, transparent), 0 20px 60px -12px color-mix(in oklab, var(--electric-blue) 35%, transparent)"
+                    : "0 12px 40px -14px color-mix(in oklab, black 60%, transparent)",
                 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="relative flex items-center overflow-hidden rounded-full border bg-card"
+                className="hero-search-bar glass-panel relative flex items-center overflow-hidden rounded-full !p-0"
                 style={{
-                  borderColor: focused ? "var(--primary)" : undefined,
+                  borderColor: focused ? "var(--electric-blue)" : undefined,
                   transition: "border-color 0.25s ease",
                 }}
               >
                 <motion.span
-                  animate={{ color: focused ? "var(--primary)" : "var(--muted-foreground)" }}
+                  animate={{ color: focused ? "var(--lime)" : "var(--slate-grey)" }}
                   transition={{ duration: 0.2 }}
                   className="grid h-12 w-12 shrink-0 place-items-center"
                 >
@@ -161,10 +155,10 @@ function Index() {
 
                 <div className="relative flex-1">
                   {query === "" && !focused && (
-                    <RotatingPlaceholder items={SEARCH_PLACEHOLDERS} prefix="Try &quot;" />
+                    <RotatingPlaceholder items={SEARCH_PLACEHOLDERS} prefix="Try &quot;" className="text-ivory/40" />
                   )}
                   {query === "" && focused && (
-                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center text-muted-foreground/50 text-sm">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center text-ivory/35 text-sm">
                       Search businesses, products, categories…
                     </span>
                   )}
@@ -176,7 +170,7 @@ function Index() {
                     onBlur={() => {
                       setTimeout(() => setFocused(false), 180);
                     }}
-                    className="h-12 w-full bg-transparent pr-4 text-sm outline-none placeholder:text-transparent"
+                    className="h-12 w-full bg-transparent pr-4 text-sm text-ivory outline-none placeholder:text-transparent"
                     aria-label="Search Glode"
                   />
                 </div>
@@ -189,7 +183,7 @@ function Index() {
                       exit={{ opacity: 0, scale: 0.7 }}
                       transition={{ duration: 0.15 }}
                       onClick={clearSearch}
-                      className="mr-1.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                      className="mr-1.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ivory/10 text-ivory/70 transition-colors hover:bg-ivory/20 hover:text-ivory"
                       aria-label="Clear search"
                     >
                       <X size={14} />
@@ -205,7 +199,7 @@ function Index() {
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.25, ease: "easeInOut" }}
                       onClick={closeSearch}
-                      className="overflow-hidden whitespace-nowrap pr-4 text-sm font-medium text-muted-foreground hover:text-foreground"
+                      className="overflow-hidden whitespace-nowrap pr-4 text-sm font-medium text-ivory/60 hover:text-ivory"
                     >
                       Cancel
                     </motion.button>
@@ -221,24 +215,24 @@ function Index() {
                     animate={{ opacity: 1, height: "auto", y: 0 }}
                     exit={{ opacity: 0, height: 0, y: -4 }}
                     transition={{ duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="mt-2 overflow-hidden rounded-2xl border bg-card text-left shadow-card"
+                    className="glass-panel mt-2 overflow-hidden rounded-2xl text-left"
                   >
                     {!hasResults ? (
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.1 }}
-                        className="flex flex-col items-center justify-center gap-2 py-10 text-sm text-muted-foreground"
+                        className="flex flex-col items-center justify-center gap-2 py-10 text-sm text-ivory/50"
                       >
                         <Search size={28} className="opacity-30" />
-                        <span>No results for <strong className="text-foreground">&ldquo;{query}&rdquo;</strong></span>
+                        <span>No results for <strong className="text-ivory">&ldquo;{query}&rdquo;</strong></span>
                       </motion.div>
                     ) : (
-                      <div className="divide-y">
+                      <div className="divide-y divide-ivory/10">
                         {/* Categories */}
                         {results.categories.length > 0 && (
                           <section className="px-4 py-3">
-                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Categories</p>
+                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-ivory/40">Categories</p>
                             <div className="flex flex-wrap gap-2">
                               {results.categories.map((cat, i) => (
                                 <motion.button
@@ -247,7 +241,7 @@ function Index() {
                                   animate={{ opacity: 1, y: 0 }}
                                   transition={{ delay: i * 0.05, duration: 0.22 }}
                                   onClick={() => navigate({ to: "/search", search: { q: cat } })}
-                                  className="flex items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-xs font-medium hover:border-primary hover:text-primary transition-colors"
+                                  className="flex items-center gap-1.5 rounded-full border border-ivory/15 bg-ivory/5 px-3 py-1.5 text-xs font-medium text-ivory hover:border-lime hover:text-lime transition-colors"
                                 >
                                   <Tag size={11} />
                                   {cat}
@@ -260,7 +254,7 @@ function Index() {
                         {/* Products */}
                         {results.products.length > 0 && (
                           <section className="px-4 py-3">
-                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Products</p>
+                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-ivory/40">Products</p>
                             <div className="space-y-2">
                               {results.products.map((product, i) => {
                                 const biz = BUSINESSES.find((b) => b.id === product.businessId);
@@ -274,10 +268,10 @@ function Index() {
                                     <Link
                                       to="/business/$id"
                                       params={{ id: product.businessId }}
-                                      className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-accent"
+                                      className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-ivory/5"
                                     >
                                       <div
-                                        className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-muted"
+                                        className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-ivory/10"
                                       >
                                         <img
                                           src={product.image}
@@ -288,20 +282,20 @@ function Index() {
                                       </div>
                                       <div className="min-w-0 flex-1">
                                         <div className="flex items-center justify-between gap-2">
-                                          <span className="truncate text-[13px] font-semibold">{product.name}</span>
+                                          <span className="truncate text-[13px] font-semibold text-ivory">{product.name}</span>
                                           {product.price > 0 && (
-                                            <span className="shrink-0 text-[13px] font-bold" style={{ color: "var(--primary)" }}>
+                                            <span className="shrink-0 text-[13px] font-bold text-lime">
                                               ${product.price.toFixed(2)}
                                             </span>
                                           )}
                                         </div>
                                         <div className="flex items-center gap-1.5 mt-0.5">
                                           {biz && (
-                                            <span className="text-[11px] text-muted-foreground truncate">{biz.name}</span>
+                                            <span className="text-[11px] text-ivory/50 truncate">{biz.name}</span>
                                           )}
                                           {product.rating > 0 && (
-                                            <span className="flex items-center gap-0.5 text-[11px] text-muted-foreground">
-                                              <Star size={10} className="fill-current" style={{ color: "var(--primary)" }} />
+                                            <span className="flex items-center gap-0.5 text-[11px] text-ivory/50">
+                                              <Star size={10} className="fill-current text-lime" />
                                               {product.rating.toFixed(1)}
                                             </span>
                                           )}
@@ -318,7 +312,7 @@ function Index() {
                         {/* Businesses */}
                         {results.businesses.length > 0 && (
                           <section className="px-4 py-3">
-                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Businesses</p>
+                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-ivory/40">Businesses</p>
                             <div className="space-y-2">
                               {results.businesses.map((biz, i) => (
                                 <motion.div
@@ -330,25 +324,25 @@ function Index() {
                                   <Link
                                     to="/business/$id"
                                     params={{ id: biz.id }}
-                                    className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-accent"
+                                    className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-ivory/5"
                                   >
                                     <BusinessAvatar b={biz} size={40} />
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-1">
-                                        <span className="truncate text-[13px] font-semibold">{biz.name}</span>
+                                        <span className="truncate text-[13px] font-semibold text-ivory">{biz.name}</span>
                                         {biz.verified && <VerifiedBadge />}
                                       </div>
                                       <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="text-[11px] text-muted-foreground truncate">{biz.category}</span>
+                                        <span className="text-[11px] text-ivory/50 truncate">{biz.category}</span>
                                         {biz.rating > 0 && (
-                                          <span className="flex items-center gap-0.5 text-[11px] text-muted-foreground shrink-0">
-                                            <Star size={10} className="fill-current" style={{ color: "var(--primary)" }} />
+                                          <span className="flex items-center gap-0.5 text-[11px] text-ivory/50 shrink-0">
+                                            <Star size={10} className="fill-current text-lime" />
                                             {biz.rating.toFixed(1)}
                                           </span>
                                         )}
                                       </div>
                                       {biz.description && (
-                                        <p className="mt-0.5 line-clamp-1 text-[11px] text-muted-foreground/70">{biz.description}</p>
+                                        <p className="mt-0.5 line-clamp-1 text-[11px] text-ivory/35">{biz.description}</p>
                                       )}
                                     </div>
                                   </Link>
@@ -362,8 +356,7 @@ function Index() {
                         <div className="px-4 py-3">
                           <button
                             onClick={() => navigate({ to: "/search", search: { q: query } })}
-                            className="flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-medium transition-colors hover:bg-accent"
-                            style={{ color: "var(--primary)" }}
+                            className="flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-medium text-lime transition-colors hover:bg-ivory/5"
                           >
                             View all results for &ldquo;{query}&rdquo;
                             <ArrowRight size={14} />
@@ -393,7 +386,7 @@ function Index() {
                           setFocused(true);
                           inputRef.current?.focus();
                         }}
-                        className="rounded-full border bg-background px-3 py-1.5 font-medium text-muted-foreground hover:bg-accent transition-colors"
+                        className="rounded-full border border-ivory/15 bg-ivory/5 px-3 py-1.5 font-medium text-ivory/70 hover:border-lime hover:text-lime transition-colors"
                       >
                         {s}
                       </button>
@@ -413,8 +406,8 @@ function Index() {
                   transition={{ duration: 0.25 }}
                   className="mx-auto mt-14 max-w-2xl"
                 >
-                  <p className="text-sm font-medium text-muted-foreground">Create your account</p>
-                  <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border bg-card p-1.5 shadow-soft">
+                  <p className="text-sm font-medium text-ivory/60">Create your account</p>
+                  <div className="glass-panel mt-3 grid grid-cols-3 gap-2 rounded-2xl p-1.5">
                     {(
                       [
                         { k: "business", label: "Business", icon: Store },
@@ -428,12 +421,12 @@ function Index() {
                           key={k}
                           onClick={() => setType(active ? null : k)}
                           className="relative flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-semibold transition-colors"
-                          style={{ color: active ? "white" : "var(--foreground)" }}
+                          style={{ color: active ? "var(--lime-foreground)" : "var(--ivory)" }}
                         >
                           {active && (
                             <motion.span
                               layoutId="type-pill"
-                              className="absolute inset-0 rounded-xl bg-primary shadow-soft"
+                              className="absolute inset-0 rounded-xl bg-lime shadow-soft"
                               transition={{ type: "spring", stiffness: 400, damping: 32 }}
                             />
                           )}
@@ -477,12 +470,12 @@ function Index() {
                       key={b.id}
                       to="/business/$id"
                       params={{ id: b.id }}
-                      className="group flex items-center gap-2 rounded-2xl border bg-card p-3 shadow-soft transition-transform hover:-translate-y-0.5"
+                      className="glass-panel group flex items-center gap-2 rounded-2xl p-3 transition-transform hover:-translate-y-0.5"
                     >
                       <BusinessAvatar b={b} size={36} />
                       <div className="min-w-0">
-                        <div className="truncate text-[13px] font-semibold">{b.name}</div>
-                        <div className="truncate text-[11px] text-muted-foreground">{b.category}</div>
+                        <div className="truncate text-[13px] font-semibold text-ivory">{b.name}</div>
+                        <div className="truncate text-[11px] text-ivory/50">{b.category}</div>
                       </div>
                     </Link>
                   ))}
@@ -490,6 +483,65 @@ function Index() {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+      </section>
+
+      {/* Ecosystem — the 4-in-1 bento grid: discoverability, direct connect, storefront, local marketplace */}
+      <section className="bg-rangoon border-t border-ivory/10">
+        <div className="mx-auto max-w-6xl px-5 py-20">
+          <div className="text-center">
+            <span className="kicker-pill">One platform, four superpowers</span>
+            <h2 className="mt-4 font-display text-3xl font-black tracking-tight text-ivory sm:text-5xl">
+              Discoverable. Direct. Sellable. Local.
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-sm text-ivory/55 sm:text-base">
+              Glode blends the best of search, messaging, storefronts, and local marketplaces into one infrastructure — so businesses never have to choose.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+            {[
+              {
+                icon: Search,
+                tag: "Google-like",
+                title: "Built-in discoverability",
+                desc: "Every business is indexed and SEO-ready from day one — customers find you without spending a dollar on ads.",
+              },
+              {
+                icon: MessageCircle,
+                tag: "WhatsApp-like",
+                title: "Direct customer relationships",
+                desc: "Chat, calls, and stories keep every conversation — and every customer — owned by you, not a platform algorithm.",
+              },
+              {
+                icon: Store,
+                tag: "Shopify-like",
+                title: "Sleek micro-storefronts",
+                desc: "Full product catalogs, checkout, and reviews live inside the same chat customers are already using.",
+              },
+              {
+                icon: Globe,
+                tag: "Local marketplace",
+                title: "Hyper-local convenience",
+                desc: "Proximity-first search surfaces businesses within walking distance, with fulfillment built for the neighborhood.",
+              },
+            ].map(({ icon: Icon, tag, title, desc }, idx) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08, duration: 0.4 }}
+                className="bento-card beam-border p-7 sm:p-8"
+              >
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-electric/30 bg-electric/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-electric">
+                  <Icon size={12} /> {tag}
+                </span>
+                <h3 className="mt-4 font-display text-xl font-bold text-ivory sm:text-2xl">{title}</h3>
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-ivory/55">{desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -503,7 +555,7 @@ function Index() {
               We built Glode for the moments between searching and buying — where a real conversation with a real business turns &ldquo;maybe&rdquo; into &ldquo;sold.&rdquo; No forms. No cold calls. Just chat.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              <Link to="/signup" search={{ type: "business" }} className="rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft">List your business</Link>
+              <Link to="/signup" search={{ type: "business" }} className="btn-lime px-4 py-2.5 text-sm">List your business</Link>
               <Link to="/search" className="rounded-full border bg-background px-4 py-2.5 text-sm font-semibold hover:bg-accent">Explore stores</Link>
             </div>
           </div>
@@ -656,7 +708,7 @@ function SignupInline({ type }: { type: AccountType }) {
         <p className="text-xs text-muted-foreground">By continuing you agree to the terms. Demo — no data stored.</p>
         <button
           onClick={() => navigate({ to: dest })}
-          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02]"
+          className="btn-lime px-4 py-2.5 text-sm"
         >
           Continue <ArrowRight size={16} />
         </button>

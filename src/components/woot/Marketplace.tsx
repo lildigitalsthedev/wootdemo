@@ -128,7 +128,7 @@ export function MarketplaceView() {
                 </div>
                 <button
                   onClick={() => addToCart(p.id)}
-                  className="mt-2 w-full rounded-full border py-1.5 text-[11px] font-semibold hover:bg-accent"
+                  className="mt-2 w-full rounded-full border py-1.5 text-[11px] font-semibold transition-colors hover:border-lime hover:bg-lime hover:text-lime-foreground"
                 >
                   Add to cart
                 </button>

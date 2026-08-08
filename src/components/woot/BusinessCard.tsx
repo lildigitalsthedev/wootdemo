@@ -13,7 +13,8 @@ export function BusinessCard({ b, expanded = false }: { b: Business; expanded?: 
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
-      className="overflow-hidden rounded-3xl border bg-card shadow-soft"
+      whileHover={{ y: -3 }}
+      className="overflow-hidden rounded-3xl border bg-card shadow-soft transition-shadow hover:border-electric/40 hover:shadow-card"
     >
       <ImageSlideshow images={b.images} className="aspect-[16/9]" />
       <div className="p-4">
@@ -53,7 +54,7 @@ export function BusinessCard({ b, expanded = false }: { b: Business; expanded?: 
           <Link
             to="/chat/$id"
             params={{ id: b.id }}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-primary py-2.5 text-[13px] font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02]"
+            className="btn-lime py-2.5 text-[13px]"
           >
             <MessageCircle size={14} /> Chat
           </Link>
